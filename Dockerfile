@@ -1,5 +1,6 @@
 FROM ubuntu
 
+ENV WORKSPACE /opt/gr-wban
 ENV TZ="Europe/Paris"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -16,3 +17,6 @@ RUN apt-get update && \
 RUN add-apt-repository ppa:gnuradio/gnuradio-releases-3.9 &&\
     apt update &&\
     apt install -y gnuradio python3-packaging
+
+RUN mkdir -p ${WORKSPACE}
+WORKDIR ${WORKSPACE}
