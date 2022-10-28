@@ -17,7 +17,10 @@ endif
 login:
 	@${DOCKER} login ${DOCKER_REPO} ${CRED} || echo "continue"
 
-xserver:
+build:
+	${DOCKER} build -t ${APP_NAME} .
+
+xserver: build
 	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
@@ -27,16 +30,13 @@ xserver:
 	${APP_NAME} /bin/bash -c ${xserver_command}
 	xhost -
 
-shell:
+shell: build
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
 		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v $(PWD)/grc:/opt/gr-wban \
 	${APP_NAME} 
-
-build:
-	${DOCKER} build -t ${APP_NAME} .
 
 tag:
 	@echo "create tag $(VERSION)"
