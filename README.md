@@ -1,11 +1,12 @@
 # WbanGr
 
-## DOCKER
+[docs](/docs)
 
-install: `https://docs.docker.com/engine/install/`
+## DOCKER API
 
-post install: `https://docs.docker.com/engine/install/linux-postinstall/`
+[install](https://docs.docker.com/engine/install/)
 
+[post_install](https://docs.docker.com/engine/install/linux-postinstall)
 
 ## HOW TO RUN
 Use docker X11 fowarding 
