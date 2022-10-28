@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Login
-      run: docker login -u ${GITLAB_USER} -p ${GITLAB_PASS}
+      run: docker login registry.gitlab.com -u ${GITLAB_USER} -p ${GITLAB_PASS}
     - name: Build Tag Update
       run: make push USER=${GITLAB_USER} PASS=${GITLAB_PASS}
