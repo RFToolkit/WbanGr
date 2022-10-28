@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Tag Update
-      run: make push
+      run: make push USER=${GITLAB_USER} PASS=${GITLAB_PASS}
