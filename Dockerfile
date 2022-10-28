@@ -3,6 +3,8 @@ FROM ubuntu
 ENV WORKSPACE /opt/gr-wban
 ENV TZ="Europe/Paris"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+COPY ./scripts/install_lib.sh /usr/bin/install_lib.sh
+RUN chmod +x /usr/bin/install_lib.sh
 
 RUN apt-get update && \
     apt-get install -y software-properties-common git cmake g++ libboost-all-dev libgmp-dev swig python3-numpy \
@@ -16,7 +18,8 @@ RUN apt-get update && \
 
 RUN add-apt-repository ppa:gnuradio/gnuradio-releases-3.9 &&\
     apt update &&\
-    apt install -y gnuradio python3-packaging
+    apt install -y gnuradio python3-packaging &&\
+        install_lib.sh
 
 RUN mkdir -p ${WORKSPACE}
 WORKDIR ${WORKSPACE}

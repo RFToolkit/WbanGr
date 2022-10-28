@@ -31,12 +31,14 @@ xserver: build
 	xhost -
 
 shell: build
+	xhost +
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
 		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v $(PWD)/grc:/opt/gr-wban \
-	${APP_NAME} 
+	${APP_NAME}
+	xhost -
 
 tag:
 	@echo "create tag $(VERSION)"
