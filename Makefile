@@ -7,8 +7,15 @@ xserver_command="gnuradio-companion"
 env:=.env
 -include $(env)
 
+CRED=
+ifdef R_PASS 
+ifdef USER
+	CRED=--username=${USER} -p ${R_PASS}
+endif
+endif
+
 login:
-	${DOCKER} login ${DOCKER_REPO}
+	@${DOCKER} login ${DOCKER_REPO} ${CRED} || echo "continue"
 
 xserver:
 	${DOCKER} run --rm -it --privileged \
