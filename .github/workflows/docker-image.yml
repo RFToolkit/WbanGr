@@ -17,7 +17,7 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.GITLAB_USER }}
+        username: maissacrement
         password: ${{ secrets.GITLAB_PASS }}
     - name: Build Tag Update
       run: make push
