@@ -22,6 +22,8 @@ RESEARCH:
 
 [french_but_manyinformation](https://tel.archives-ouvertes.fr/tel-01124373/document)
 
+[complete_research](https://jnrdm2019.sciencesconf.org/data/pages/proceedings.pdf)
+
 Bind to tshark: 
 
 [rftap](https://github.com/rftap/gr-rftap)
