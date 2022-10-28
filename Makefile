@@ -43,6 +43,6 @@ tag:
 	${DOCKER} tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 	${DOCKER} tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
 
-push: build tag
+push: login build tag
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):latest

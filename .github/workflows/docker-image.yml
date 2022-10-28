@@ -20,4 +20,7 @@ jobs:
         username: maissacrement
         password: ${{ secrets.GITLAB_PASS }}
     - name: Build Tag Update
-      run: make push
+      run: make build tag
+    - name: Push
+      run: |
+        docker push maissacrement/docker/radio:latest
