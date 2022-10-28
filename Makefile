@@ -2,7 +2,7 @@ DOCKER:=@docker
 APP_NAME=maissacrement/docker/radio
 VERSION=$(shell git rev-parse --short HEAD)
 DOCKER_REPO=registry.gitlab.com
-xserver_command="gnuradio-companion"
+xserver_command='gnuradio-companion /opt/gr-wban/*'
 
 env:=.env
 -include $(env)
@@ -18,18 +18,21 @@ login:
 	@${DOCKER} login ${DOCKER_REPO} ${CRED} || echo "continue"
 
 xserver:
+	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
-		-v /home/Maissacremehnt/.Xauthority:/root/.Xauthority \
+		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
-	${APP_NAME} ${xserver_command}
+		-v ${PWD}/grc:/opt/gr-wban \
+	${APP_NAME} /bin/bash -c ${xserver_command}
+	xhost -
 
 shell:
-	@xhost + # Active xhost
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
-		-v /home/Maissacremehnt/.Xauthority:/root/.Xauthority \
+		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v $(PWD)/grc:/opt/gr-wban \
 	${APP_NAME} 
 
 build:
