@@ -89,20 +89,17 @@ class wban(gr.top_block, Qt.QWidget):
                 samp_rate/4,
                 window.WIN_HAMMING,
                 6.76))
-        self.digital_ofdm_rx_0 = digital.ofdm_rx(
-            fft_len=64, cp_len=16,
-            frame_length_tag_key='frame_'+"length",
-            packet_length_tag_key="length",
-            occupied_carriers=(),
-            pilot_carriers=(),
-            pilot_symbols=(),
-            sync_word1=(),
-            sync_word2=(),
-            bps_header=1,
-            bps_payload=1,
-            debug_log=False,
-            scramble_bits=False)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/opt/gr-wban/rx', True, 0, 0)
+        self.digital_gfsk_demod_0 = digital.gfsk_demod(
+            samples_per_symbol=4,
+            sensitivity=1.0,
+            gain_mu=0.175,
+            mu=0.5,
+            omega_relative_limit=0.005,
+            freq_error=0.0,
+            verbose=False,
+            log=False)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, 32000,True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/opt/gr-wban/rx.in', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/d.bin', False)
         self.blocks_file_sink_0.set_unbuffered(False)
@@ -112,8 +109,9 @@ class wban(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.digital_ofdm_rx_0, 0), (self.blocks_file_sink_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.digital_ofdm_rx_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.digital_gfsk_demod_0, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.blocks_throttle_0, 0))
 
 
     def closeEvent(self, event):

@@ -70,7 +70,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /opt/gr-wban/rx
+    file: /opt/gr-wban/rx.in
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -85,31 +85,46 @@ blocks:
     coordinate: [136, 300.0]
     rotation: 0
     state: true
-- name: digital_ofdm_rx_0
-  id: digital_ofdm_rx
+- name: blocks_throttle_0
+  id: blocks_throttle
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    cp_len: '16'
-    fft_len: '64'
-    header_mod: '"BPSK"'
-    log: 'False'
+    ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    occupied_carriers: ()
-    packet_len_key: '"length"'
-    payload_mod: '"BPSK"'
-    pilot_carriers: ()
-    pilot_symbols: ()
-    scramble_bits: 'False'
-    sync_word1: ()
-    sync_word2: ()
+    samples_per_second: '32000'
+    type: complex
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [672, 316.0]
+    coordinate: [560, 356.0]
+    rotation: 0
+    state: true
+- name: digital_gfsk_demod_0
+  id: digital_gfsk_demod
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    freq_error: '0.0'
+    gain_mu: '0.175'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: '0.5'
+    omega_relative_limit: '0.005'
+    samples_per_symbol: '4'
+    sensitivity: '1.0'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 324.0]
     rotation: 0
     state: true
 - name: low_pass_filter_0
@@ -133,14 +148,15 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [448, 300.0]
+    coordinate: [352, 300.0]
     rotation: 0
     state: true
 
 connections:
 - [blocks_file_source_0, '0', low_pass_filter_0, '0']
-- [digital_ofdm_rx_0, '0', blocks_file_sink_0, '0']
-- [low_pass_filter_0, '0', digital_ofdm_rx_0, '0']
+- [blocks_throttle_0, '0', digital_gfsk_demod_0, '0']
+- [digital_gfsk_demod_0, '0', blocks_file_sink_0, '0']
+- [low_pass_filter_0, '0', blocks_throttle_0, '0']
 
 metadata:
   file_format: 1
