@@ -4,6 +4,8 @@ ENV WORKSPACE /opt/gr-wban
 ENV TZ="Europe/Paris"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY ./scripts/install_lib.sh /usr/bin/install_lib.sh
+RUN mkdir -p /root/.grc_gnuradio
+COPY .grc_gnuradio /root/.grc_gnuradio
 RUN chmod +x /usr/bin/install_lib.sh
 
 RUN apt-get update && \
@@ -13,11 +15,12 @@ RUN apt-get update && \
     liblog4cpp5-dev libzmq3-dev python3-yaml python3-click python3-click-plugins \
     python3-zmq python3-scipy python3-gi python3-gi-cairo gir1.2-gtk-3.0 \
     libcodec2-dev libgsm1-dev pybind11-dev python3-matplotlib libsndfile1-dev \
-    python3-pip libsoapysdr-dev soapysdr-tools && \
+    libairspy-dev librtlsdr-dev libhackrf-dev libairspyhf-dev libbladerf-dev \
+    python3-pip libsoapysdr-dev soapysdr-tools xterm libuhd-dev libfreesrp-dev liborc-0.4-dev && \
+    add-apt-repository ppa:gnuradio/gnuradio-releases-3.9 &&\
     rm -rf /var/lib/apt/lists/*
 
-RUN add-apt-repository ppa:gnuradio/gnuradio-releases-3.9 &&\
-    apt update &&\
+RUN apt update &&\
     apt install -y gnuradio python3-packaging &&\
         install_lib.sh
 
