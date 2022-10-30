@@ -27,6 +27,7 @@ xserver: build
 		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v ${PWD}/grc:/opt/gr-wban \
+		-v /dev/bus/usb:/dev/bus/usb \
 	${APP_NAME} /bin/bash -c ${xserver_command}
 	xhost -
 
@@ -37,6 +38,7 @@ shell: build
 		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v $(PWD)/grc:/opt/gr-wban \
+		-v /dev/bus/usb:/dev/bus/usb \
 	${APP_NAME}
 	xhost -
 
