@@ -2,7 +2,8 @@ DOCKER:=@docker
 APP_NAME=maissacrement/docker/radio
 VERSION=$(shell git rev-parse --short HEAD)
 DOCKER_REPO=registry.gitlab.com
-xserver_command='gnuradio-companion /opt/gr-wban/*'
+xserver_command='gnuradio-companion /opt/gr-wban/*.grc'
+PWD:=`pwd`
 
 env:=.env
 -include $(env)
