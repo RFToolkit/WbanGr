@@ -20,7 +20,7 @@ login:
 build:
 	${DOCKER} build -t ${APP_NAME} .
 
-xserver: build
+xserver-dev: build 
 	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
@@ -50,3 +50,19 @@ tag:
 push: login build tag
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):latest
+
+pull:
+	${DOCKER} pull $(DOCKER_REPO)/$(APP_NAME):latest
+
+xserver: pull
+	xhost + # give foward auth
+	${DOCKER} run --rm -it --privileged \
+                --env DISPLAY=${DISPLAY} \
+                -v $(HOME)/.Xauthority:/root/.Xauthority \
+                -v /tmp/.X11-unix:/tmp/.X11-unix \
+                -v ${PWD}/grc:/opt/gr-wban \
+                -v /dev/bus/usb:/dev/bus/usb \
+        $(DOCKER_REPO)/$(APP_NAME):latest /bin/bash -c ${xserver_command}
+	xhost -
+
+
