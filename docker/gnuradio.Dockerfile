@@ -24,5 +24,8 @@ RUN apt update &&\
     apt install -y gnuradio python3-packaging &&\
         install_lib.sh
 
+RUN DEBIAN_FRONTEND=noninteractive apt install vim xxd tshark -y
+COPY ./scripts/entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
 RUN mkdir -p ${WORKSPACE}
 WORKDIR ${WORKSPACE}

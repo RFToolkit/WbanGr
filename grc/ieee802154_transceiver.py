@@ -374,7 +374,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, 32000,True)
         self.blocks_sub_xx_0 = blocks.sub_ff(1)
-        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/new.pcap', False)
+        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/new.pcap', True)
         self.blocks_file_sink_0_0_1.set_unbuffered(False)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(-38, 1)
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(1)
