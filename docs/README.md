@@ -2,6 +2,8 @@
  
 ![sniff](../assets/sdr-figure1.jpg)
 
+![packet](../assets/pdu.jpg)
+
 ## Links
 
 Base Gnuradio: 

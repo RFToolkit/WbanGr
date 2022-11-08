@@ -2,3 +2,6 @@
 **/*.wav
 **/*.raw
 **/*.in
+**/info
+**/xor*.py
+**/regex

@@ -58,12 +58,13 @@ pull:
 xserver: pull
 	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
+				--user "$(id -u):$(id -g)" \
                 --env DISPLAY=${DISPLAY} \
                 -v $(HOME)/.Xauthority:/root/.Xauthority \
                 -v /tmp/.X11-unix:/tmp/.X11-unix \
                 -v ${PWD}/grc:/opt/gr-wban \
                 -v /dev/bus/usb:/dev/bus/usb \
-        $(DOCKER_REPO)/$(APP_NAME):latest /bin/bash -c ${xserver_command}
+        $(DOCKER_REPO)/$(APP_NAME):latest /bin/bash 
 	xhost -
 
 
