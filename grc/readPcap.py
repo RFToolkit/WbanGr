@@ -38,7 +38,7 @@ def translate(line):
 mime = magic.Magic(mime=True)
 while 1:
     try:
-        pkts=rdpcap("/tmp/in.pcap")
+        pkts=rdpcap("./wpan.pcap")
         for p in pkts:
             print(p.summary())
             if p:
