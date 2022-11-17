@@ -24,6 +24,7 @@ xserver-dev: build
 	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
+		--env "TERM=xterm-256color" \
 		-v $(HOME)/.Xauthority:/root/.Xauthority \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v ${PWD}/grc:/opt/gr-wban \

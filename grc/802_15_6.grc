@@ -216,7 +216,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '8'
+    value: '2'
     widget: counter_slider
   states:
     bus_sink: false
@@ -237,7 +237,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '16'
+    value: '2'
     widget: counter_slider
   states:
     bus_sink: false
@@ -371,11 +371,11 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    append: 'True'
+    append: 'False'
     comment: ''
-    file: /opt/gr-wban/new.pcap
+    file: /tmp/in.pcap
     type: byte
-    unbuffered: 'False'
+    unbuffered: 'True'
     vlen: '1'
   states:
     bus_sink: false
@@ -384,6 +384,24 @@ blocks:
     coordinate: [1824, 292.0]
     rotation: 0
     state: enabled
+- name: blocks_file_sink_0_0_1_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /opt/gr-wban/wpan.pcap
+    type: byte
+    unbuffered: 'True'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1832, 396.0]
+    rotation: 0
+    state: disabled
 - name: blocks_file_sink_0_1
   id: blocks_file_sink
   parameters:
@@ -402,6 +420,46 @@ blocks:
     coordinate: [1384, 1196.0]
     rotation: 0
     state: disabled
+- name: blocks_file_sink_1
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /opt/gr-wban/wpan.wav
+    type: complex
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 564.0]
+    rotation: 0
+    state: disabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /opt/gr-wban/wpan.wav
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 196.0]
+    rotation: 0
+    state: true
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -617,6 +675,22 @@ blocks:
     coordinate: [872, 764.0]
     rotation: 0
     state: disabled
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 48.0]
+    rotation: 0
+    state: disabled
 - name: digital_clock_recovery_mm_xx_0
   id: digital_clock_recovery_mm_xx
   parameters:
@@ -716,7 +790,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1616, 316.0]
+    coordinate: [1640, 316.0]
     rotation: 0
     state: enabled
 - name: foo_wireshark_connector_0_0
@@ -1007,7 +1081,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: freq
+    freq0: 2.64e9
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -1171,7 +1245,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: samp_rate
+    sample_rate: '500'
     sync: sync
     time_source0: ''
     time_source1: ''
@@ -1186,9 +1260,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 148.0]
+    coordinate: [232, 140.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: osmosdr_source_0_0
   id: osmosdr_source
   parameters:
@@ -2291,6 +2365,7 @@ connections:
 - [analog_quadrature_demod_cf_0_0, '0', single_pole_iir_filter_xx_0_0, '0']
 - [analog_simple_squelch_cc_0, '0', blocks_throttle_0, '0']
 - [analog_simple_squelch_cc_0_0, '0', blocks_throttle_0_0, '0']
+- [blocks_file_source_0, '0', analog_simple_squelch_cc_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_float_to_complex_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_file_sink_0_0_1, '0']
@@ -2322,6 +2397,7 @@ connections:
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0, '0']
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0_0, '0']
 - [foo_wireshark_connector_0, '0', blocks_file_sink_0_0_1, '0']
+- [foo_wireshark_connector_0, '0', blocks_file_sink_0_0_1_0, '0']
 - [foo_wireshark_connector_0, '0', blocks_tagged_stream_to_pdu_1, '0']
 - [foo_wireshark_connector_0, '0', qtgui_number_sink_0, '0']
 - [foo_wireshark_connector_0_0, '0', blocks_file_sink_0_0_0, '0']
@@ -2335,6 +2411,7 @@ connections:
 - [low_pass_filter_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [low_pass_filter_0_0, '0', analog_quadrature_demod_cf_0_0, '0']
 - [osmosdr_source_0, '0', analog_simple_squelch_cc_0, '0']
+- [osmosdr_source_0, '0', blocks_file_sink_1, '0']
 - [osmosdr_source_0_0, '0', analog_simple_squelch_cc_0_0, '0']
 - [single_pole_iir_filter_xx_0, '0', blocks_sub_xx_0, '1']
 - [single_pole_iir_filter_xx_0_0, '0', blocks_sub_xx_0_0, '1']

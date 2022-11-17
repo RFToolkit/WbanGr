@@ -24,8 +24,15 @@ RUN apt update &&\
     apt install -y gnuradio python3-packaging &&\
         install_lib.sh
 
-RUN DEBIAN_FRONTEND=noninteractive apt install vim xxd tshark -y
+RUN DEBIAN_FRONTEND=noninteractive apt install netcat vim xxd tshark -y
+
+RUN pip install python-magic deep-translator scapy pydub pyshark
+
 COPY ./scripts/entrypoint.sh /usr/bin/entrypoint.sh
 RUN chmod +x /usr/bin/entrypoint.sh
+
+RUN echo "alias grep='grep --color=auto'" >> ~/.bashrc && \
+    echo 'set -g default-terminal "screen-256color"' >> ~/.tmux.conf
+
 RUN mkdir -p ${WORKSPACE}
 WORKDIR ${WORKSPACE}

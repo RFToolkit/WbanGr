@@ -1,7 +1,7 @@
 .env
-**/*.wav
 **/*.raw
 **/*.in
 **/info
 **/xor*.py
 **/regex
+**/perso
