@@ -427,6 +427,8 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, 32000,True)
         self.blocks_sub_xx_0 = blocks.sub_ff(1)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
+        self.blocks_file_sink_1 = blocks.file_sink(gr.sizeof_gr_complex*1, '/opt/gr-wban/wpan.wav', False)
+        self.blocks_file_sink_1.set_unbuffered(False)
         self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
         self.blocks_file_sink_0_0_1_0.set_unbuffered(True)
         self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/tmp/in.pcap', False)
@@ -460,6 +462,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_time_sink_x_1_2, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.blocks_file_sink_1, 0))
         self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_sub_xx_0, 1))
         self.connect((self.single_pole_iir_filter_xx_0, 0), (self.qtgui_time_sink_x_1_2_0_0, 0))
 
