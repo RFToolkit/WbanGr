@@ -36,7 +36,7 @@ def translate(line):
     res=res.decode('utf-8', 'ignore')
 
     print(res)
-    #hexdump(line.decode('utf-8', 'ignore')+res)
+    hexdump(line.decode('utf-8', 'ignore')+res)
 
 mime = magic.Magic(mime=True)
 while 1:
@@ -54,7 +54,7 @@ while 1:
                 except:
                     pass"""
         for p in pkts:
-            #print(p.summary())
+            print(p.summary())
             if p:
                 if (p.payload and len(p.payload.payload)):
                     print('='*35)
