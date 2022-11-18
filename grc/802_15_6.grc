@@ -499,7 +499,7 @@ blocks:
     bus_structure: null
     coordinate: [472, 564.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -1340,7 +1340,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [152, 156.0]
+    coordinate: [176, 100.0]
     rotation: 0
     state: disabled
 - name: osmosdr_source_0_0
