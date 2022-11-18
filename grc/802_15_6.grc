@@ -97,7 +97,7 @@ blocks:
     options: '[11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]'
     orient: Qt.QVBoxLayout
     type: int
-    value: '17'
+    value: '20'
     widget: combo_box
   states:
     bus_sink: false
@@ -216,7 +216,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '2'
+    value: '4'
     widget: counter_slider
   states:
     bus_sink: false
@@ -237,7 +237,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '2'
+    value: '4'
     widget: counter_slider
   states:
     bus_sink: false
@@ -1161,7 +1161,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: 2.64e9
+    freq0: freq
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -1325,7 +1325,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: '500'
+    sample_rate: samp_rate
     sync: sync
     time_source0: ''
     time_source1: ''

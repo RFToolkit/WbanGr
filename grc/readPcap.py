@@ -12,7 +12,7 @@ global rm
 rm=False
 
 conf.dot15d4_protocol = "sixlowpan"
-yandex = GoogleTranslator(source='zh-TW', target='fr')
+yandex = GoogleTranslator(source='zh-TW', target='en')
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,7 +24,7 @@ def remove():
     return True
 
 def translate(line):
-    res=line.decode('big5', 'ignore')
+    res=line.decode('gbk', 'ignore')
     res=re.sub('([^\u0020-\u007E]+)', ' \g<1> ', res)
     res=re.sub('\s+', ' ', res)
     print('x'*35)
@@ -32,10 +32,11 @@ def translate(line):
     res=str(yandex.translate(res))
     res=re.sub('é|è|ê', 'e', res)
     res=re.sub('â|à', 'a', res)
-    res=res.encode('big5', 'ignore')
+    res=res.encode('gbk', 'ignore')
     res=res.decode('utf-8', 'ignore')
 
-    hexdump(line.decode('utf-8', 'ignore')+res)
+    print(res)
+    #hexdump(line.decode('utf-8', 'ignore')+res)
 
 mime = magic.Magic(mime=True)
 while 1:
@@ -53,7 +54,7 @@ while 1:
                 except:
                     pass"""
         for p in pkts:
-            print(p.summary())
+            #print(p.summary())
             if p:
                 if (p.payload and len(p.payload.payload)):
                     print('='*35)
