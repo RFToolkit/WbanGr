@@ -29,6 +29,7 @@ def translate(line):
     res=re.sub('\s+', ' ', res)
     print('x'*35)
     time.sleep(0.6)
+    print(res)
     res=str(yandex.translate(res))
     res=re.sub('é|è|ê', 'e', res)
     res=re.sub('â|à', 'a', res)
