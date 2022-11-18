@@ -14,6 +14,8 @@ rm=False
 conf.dot15d4_protocol = "sixlowpan"
 yandex = GoogleTranslator(source='zh-TW', target='fr')
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def remove():
     if rm:
         rm=False
@@ -30,15 +32,26 @@ def translate(line):
     res=str(yandex.translate(res))
     res=re.sub('é|è|ê', 'e', res)
     res=re.sub('â|à', 'a', res)
-    res=res.encode('gbk', 'ignore')
-    res=res.decode('ascii', 'ignore')
+    res=res.encode('big5', 'ignore')
+    res=res.decode('utf-8', 'ignore')
 
-    return res
+    hexdump(line.decode('utf-8', 'ignore')+res)
 
 mime = magic.Magic(mime=True)
 while 1:
     try:
-        pkts=rdpcap("./wpan.pcap")
+        pkts=rdpcap(ROOT_DIR + "/wpan.pcap")
+        import json
+        from pprint import pprint
+        """sessions = pkts.sessions()
+        for session in sessions:
+            http_payload = ""
+            for packet in sessions[session]:
+                try:
+                    if packet[TCP].dport == 80 or packet[TCP].sport == 80:
+                        print(packet[TCP].payload)
+                except:
+                    pass"""
         for p in pkts:
             print(p.summary())
             if p:
@@ -61,5 +74,6 @@ while 1:
             remove()
         if "No such":
             os.system('touch /tmp/in.pcap')
+        print(e)
         #remove(rm)
         pass

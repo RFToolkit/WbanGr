@@ -278,6 +278,50 @@ blocks:
     coordinate: [784, 1100.0]
     rotation: 0
     state: disabled
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: '500000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 332.0]
+    rotation: 0
+    state: true
+- name: analog_sig_source_x_1
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: '500000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    type: complex
+    waveform: analog.GR_SIN_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 460.0]
+    rotation: 0
+    state: true
 - name: analog_simple_squelch_cc_0
   id: analog_simple_squelch_cc
   parameters:
@@ -312,6 +356,24 @@ blocks:
     coordinate: [648, 740.0]
     rotation: 0
     state: disabled
+- name: blocks_add_xx_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [512, 472.0]
+    rotation: 0
+    state: true
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -401,7 +463,7 @@ blocks:
     bus_structure: null
     coordinate: [1832, 396.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_file_sink_0_1
   id: blocks_file_sink
   parameters:
@@ -457,9 +519,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 196.0]
+    coordinate: [264, 196.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -492,6 +554,24 @@ blocks:
     coordinate: [1224, 776.0]
     rotation: 0
     state: disabled
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 376.0]
+    rotation: 0
+    state: true
 - name: blocks_socket_pdu_0
   id: blocks_socket_pdu
   parameters:
@@ -653,7 +733,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [552, 236.0]
+    coordinate: [632, 236.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0_0
@@ -879,7 +959,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [544, 396.0]
+    coordinate: [640, 388.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0_0
@@ -1260,9 +1340,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [232, 140.0]
+    coordinate: [152, 156.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: osmosdr_source_0_0
   id: osmosdr_source
   parameters:
@@ -2194,7 +2274,7 @@ blocks:
     ctrlpanel: 'True'
     entags: 'True'
     grid: 'False'
-    gui_hint: 5,0,1,4
+    gui_hint: 8,0,1,4
     label1: Raw DC Blocked R
     label10: ''
     label2: Raw DC Blocked I
@@ -2258,6 +2338,103 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [792, 484.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_1_2_0_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: 5,0,1,4
+    label1: Raw DC Blocked R
+    label10: ''
+    label2: Raw DC Blocked I
+    label3: dqpsk R
+    label4: dqpsk I
+    label5: Sub i
+    label6: Sub q
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '"Rx"'
+    nconnections: '1'
+    size: '1024'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.2'
+    tr_mode: qtgui.TRIG_MODE_AUTO
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '0.5'
+    ymin: '-0.5'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [944, 184.0]
     rotation: 0
     state: enabled
 - name: qtgui_waterfall_sink_x_0
@@ -2326,7 +2503,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    alpha: '0.00016'
+    alpha: '0.000150'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -2363,11 +2540,15 @@ connections:
 - [analog_quadrature_demod_cf_0, '0', single_pole_iir_filter_xx_0, '0']
 - [analog_quadrature_demod_cf_0_0, '0', blocks_sub_xx_0_0, '0']
 - [analog_quadrature_demod_cf_0_0, '0', single_pole_iir_filter_xx_0_0, '0']
-- [analog_simple_squelch_cc_0, '0', blocks_throttle_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
+- [analog_sig_source_x_1, '0', blocks_add_xx_0, '1']
+- [analog_simple_squelch_cc_0, '0', blocks_multiply_xx_0, '0']
 - [analog_simple_squelch_cc_0_0, '0', blocks_throttle_0_0, '0']
+- [blocks_add_xx_0, '0', blocks_throttle_0, '0']
 - [blocks_file_source_0, '0', analog_simple_squelch_cc_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_float_to_complex_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
+- [blocks_multiply_xx_0, '0', blocks_add_xx_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_file_sink_0_0_1, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', ieee802_15_4_frame_buffer_cc_0, '0']
@@ -2414,6 +2595,7 @@ connections:
 - [osmosdr_source_0, '0', blocks_file_sink_1, '0']
 - [osmosdr_source_0_0, '0', analog_simple_squelch_cc_0_0, '0']
 - [single_pole_iir_filter_xx_0, '0', blocks_sub_xx_0, '1']
+- [single_pole_iir_filter_xx_0, '0', qtgui_time_sink_x_1_2_0_0, '0']
 - [single_pole_iir_filter_xx_0_0, '0', blocks_sub_xx_0_0, '1']
 
 metadata:
