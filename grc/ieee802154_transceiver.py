@@ -89,7 +89,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.freq = freq = 2405000000 + 5000000*(channel - 11)
         self.symb0 = symb0 = 4
         self.symb = symb = 4
-        self.samp_rate = samp_rate = 2000000
+        self.samp_rate = samp_rate = 20000000
         self.rx_gain = rx_gain = 5
         self.page_label = page_label = 0
         self.if_gain = if_gain = 30
@@ -367,7 +367,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.foo_wireshark_connector_0 = foo.wireshark_connector(195, True)
+        self.foo_wireshark_connector_0 = foo.wireshark_connector(195, False)
         self.digital_symbol_sync_xx_0 = digital.symbol_sync_ff(
             digital.TED_MOD_MUELLER_AND_MULLER,
             symb,
@@ -408,9 +408,6 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
         self.blocks_file_sink_0_0_1_0.set_unbuffered(True)
-        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/tmp/in.pcap', False)
-        self.blocks_file_sink_0_0_1.set_unbuffered(True)
-        self.blocks_add_xx_0 = blocks.add_vcc(1)
         self._bb_gain_range = Range(0, 50, 1, 30, 200)
         self._bb_gain_win = RangeWidget(self._bb_gain_range, self.set_bb_gain, "BB", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._bb_gain_win, 98, 0, 1, 1)
@@ -419,8 +416,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(-38, 1)
-        self.analog_sig_source_x_1 = analog.sig_source_c(samp_rate, analog.GR_SIN_WAVE, 500000, 1, 0, 0)
-        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, 500000, 1, 0, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_SIN_WAVE, 2000000, 5, 0, 0)
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(1)
 
 
@@ -431,16 +427,13 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.blocks_sub_xx_0, 0))
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.single_pole_iir_filter_xx_0, 0))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
-        self.connect((self.analog_sig_source_x_1, 0), (self.blocks_add_xx_0, 1))
         self.connect((self.analog_simple_squelch_cc_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_add_xx_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_sub_xx_0, 0), (self.digital_clock_recovery_mm_xx_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.digital_clock_recovery_mm_xx_0, 0), (self.digital_symbol_sync_xx_0, 0))
         self.connect((self.digital_symbol_sync_xx_0, 0), (self.ieee802_15_4_packet_sink_0, 0))
-        self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0_0_1, 0))
         self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0_0_1_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.analog_quadrature_demod_cf_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_const_sink_x_1_1, 0))
@@ -492,7 +485,6 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
-        self.analog_sig_source_x_1.set_sampling_freq(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.samp_rate/2, self.samp_rate/4, window.WIN_HAMMING, 6.76))
         self.qtgui_time_sink_x_1_2.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_2_0_0.set_samp_rate(self.samp_rate)

@@ -38,6 +38,7 @@ make_zigbee () {
 main () {
     #async_func
     gnuradio-companion /opt/gr-wban/*.grc &>/dev/null &
+    pip install dnspython
     python3 readPcap.py
     #while true; do    tshark -r ${file} -d tcp.port==80,http -w - > /tmp/in.pcap; done &
     #tail -f ${file} | tshark -r - -w - >> /tmp/in.pcap &

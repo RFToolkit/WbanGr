@@ -58,7 +58,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '100000000'
+    value: '13789900'
   states:
     bus_sink: false
     bus_source: false
@@ -217,7 +217,7 @@ blocks:
     alias: ''
     append: 'True'
     comment: ''
-    file: /opt/gr-wban/new.pcap
+    file: /tmp/new.pcap
     type: byte
     unbuffered: 'False'
     vlen: '1'
@@ -288,7 +288,7 @@ blocks:
     len_tag_key: '"packet_len"'
     maxoutbuf: '0'
     minoutbuf: '0'
-    packet_len: '2000'
+    packet_len: '100'
     type: float
     vlen: '1'
   states:

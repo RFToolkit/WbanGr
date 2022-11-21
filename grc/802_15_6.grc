@@ -196,7 +196,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '2000000'
+    value: '20000000'
   states:
     bus_sink: false
     bus_source: false
@@ -283,31 +283,9 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '1'
+    amp: '5'
     comment: ''
-    freq: '500000'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    offset: '0'
-    phase: '0'
-    samp_rate: samp_rate
-    type: complex
-    waveform: analog.GR_COS_WAVE
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [176, 332.0]
-    rotation: 0
-    state: true
-- name: analog_sig_source_x_1
-  id: analog_sig_source_x
-  parameters:
-    affinity: ''
-    alias: ''
-    amp: '1'
-    comment: ''
-    freq: '500000'
+    freq: '2000000'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
@@ -319,7 +297,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 460.0]
+    coordinate: [176, 332.0]
     rotation: 0
     state: true
 - name: analog_simple_squelch_cc_0
@@ -356,24 +334,6 @@ blocks:
     coordinate: [648, 740.0]
     rotation: 0
     state: disabled
-- name: blocks_add_xx_0
-  id: blocks_add_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [512, 472.0]
-    rotation: 0
-    state: true
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -445,7 +405,7 @@ blocks:
     bus_structure: null
     coordinate: [1824, 292.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_sink_0_0_1_0
   id: blocks_file_sink
   parameters:
@@ -856,13 +816,51 @@ blocks:
     coordinate: [1256, 404.0]
     rotation: 0
     state: true
+- name: dtv_dvbt2_cellinterleaver_cc_0
+  id: dtv_dvbt2_cellinterleaver_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: MOD_QPSK
+    fecblocks: '168'
+    framesize: FECFRAME_NORMAL
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tiblocks: '3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1672, 516.0]
+    rotation: 0
+    state: disabled
+- name: dtv_dvbt_map_0
+  id: dtv_dvbt_map
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    constellation: qpsk
+    gain: '1'
+    hierarchy: nh
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    transmission_mode: T2k
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1816, 716.0]
+    rotation: 0
+    state: disabled
 - name: foo_wireshark_connector_0
   id: foo_wireshark_connector
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    debug: 'True'
+    debug: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     tech: '195'
@@ -1326,7 +1324,7 @@ blocks:
     nchan: '1'
     num_mboards: '1'
     sample_rate: samp_rate
-    sync: sync
+    sync: none
     time_source0: ''
     time_source1: ''
     time_source2: ''
@@ -2534,6 +2532,26 @@ blocks:
     coordinate: [688, 908.0]
     rotation: 0
     state: disabled
+- name: video_sdl_sink_0
+  id: video_sdl_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    display_height: '480'
+    display_width: '640'
+    fps: '2000'
+    height: '480'
+    num_channels: '1'
+    type: byte
+    width: '640'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1016, 484.0]
+    rotation: 0
+    state: disabled
 
 connections:
 - [analog_quadrature_demod_cf_0, '0', blocks_sub_xx_0, '0']
@@ -2541,14 +2559,12 @@ connections:
 - [analog_quadrature_demod_cf_0_0, '0', blocks_sub_xx_0_0, '0']
 - [analog_quadrature_demod_cf_0_0, '0', single_pole_iir_filter_xx_0_0, '0']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
-- [analog_sig_source_x_1, '0', blocks_add_xx_0, '1']
 - [analog_simple_squelch_cc_0, '0', blocks_multiply_xx_0, '0']
 - [analog_simple_squelch_cc_0_0, '0', blocks_throttle_0_0, '0']
-- [blocks_add_xx_0, '0', blocks_throttle_0, '0']
 - [blocks_file_source_0, '0', analog_simple_squelch_cc_0, '0']
 - [blocks_float_to_complex_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_float_to_complex_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
-- [blocks_multiply_xx_0, '0', blocks_add_xx_0, '0']
+- [blocks_multiply_xx_0, '0', blocks_throttle_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_file_sink_0_0_1, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', ieee802_15_4_frame_buffer_cc_0, '0']

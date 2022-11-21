@@ -82,7 +82,7 @@ class rfid(gr.top_block, Qt.QWidget):
         self.samp_rate = samp_rate = 1000000
         self.rx_gain = rx_gain = 2
         self.if_gain = if_gain = 20
-        self.freq = freq = 100000000
+        self.freq = freq = 13789900
         self.bb_gain = bb_gain = 20
 
         ##################################################
@@ -171,9 +171,9 @@ class rfid(gr.top_block, Qt.QWidget):
         self.osmosdr_source_0.set_antenna('LNAH', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
         self.blocks_tagged_stream_to_pdu_0 = blocks.tagged_stream_to_pdu(blocks.float_t, 'packet_len')
-        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_float, 1, 2000, "packet_len")
+        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_float, 1, 100, "packet_len")
         self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
-        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/new.pcap', True)
+        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/tmp/new.pcap', True)
         self.blocks_file_sink_0_0_1.set_unbuffered(False)
         self.analog_fm_demod_cf_0 = analog.fm_demod_cf(
         	channel_rate=384000,
