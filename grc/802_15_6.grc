@@ -216,7 +216,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '4'
+    value: '3'
     widget: counter_slider
   states:
     bus_sink: false
@@ -237,7 +237,7 @@ blocks:
     start: '2'
     step: '1'
     stop: '50'
-    value: '4'
+    value: '8'
     widget: counter_slider
   states:
     bus_sink: false
@@ -285,7 +285,7 @@ blocks:
     alias: ''
     amp: '5'
     comment: ''
-    freq: '2000000'
+    freq: '1000000'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
@@ -297,7 +297,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 332.0]
+    coordinate: [176, 412.0]
     rotation: 0
     state: true
 - name: analog_simple_squelch_cc_0
@@ -309,7 +309,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    threshold: '-38'
+    threshold: '-20'
   states:
     bus_sink: false
     bus_source: false
@@ -457,7 +457,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 564.0]
+    coordinate: [456, 468.0]
     rotation: 0
     state: disabled
 - name: blocks_file_source_0
@@ -481,7 +481,7 @@ blocks:
     bus_structure: null
     coordinate: [264, 196.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -686,14 +686,14 @@ blocks:
     ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: '32000'
+    samples_per_second: '2000000'
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [632, 236.0]
+    coordinate: [504, 216.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0_0
@@ -804,10 +804,10 @@ blocks:
     nfilters: '128'
     osps: symb0
     pfb_mf_taps: '[]'
-    resamp_type: digital.IR_PFB_NO_MF
+    resamp_type: digital.IR_MMSE_8TAP
     sps: symb
     ted_gain: '1.0'
-    ted_type: digital.TED_MOD_MUELLER_AND_MULLER
+    ted_type: digital.TED_MENGALI_AND_DANDREA_GMSK
     type: ff
   states:
     bus_sink: false
@@ -943,21 +943,21 @@ blocks:
     alias: ''
     beta: '6.76'
     comment: ''
-    cutoff_freq: samp_rate/2
-    decim: '1'
+    cutoff_freq: '100000'
+    decim: '245'
     gain: '1'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
     type: fir_filter_ccf
-    width: samp_rate/4
+    width: '25000'
     win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 388.0]
+    coordinate: [576, 316.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0_0
@@ -1159,7 +1159,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: freq
+    freq0: 2.359397e9
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -1340,7 +1340,7 @@ blocks:
     bus_structure: null
     coordinate: [176, 100.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: osmosdr_source_0_0
   id: osmosdr_source
   parameters:
