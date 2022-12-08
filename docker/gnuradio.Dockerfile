@@ -35,6 +35,8 @@ RUN chmod +x /usr/bin/entrypoint.sh
 RUN echo "alias grep='grep --color=auto'" >> ~/.bashrc && \
     echo 'set -g default-terminal "screen-256color"' >> ~/.tmux.conf
 
+RUN pip install Flask[async]
+
 COPY ./grc/precompiled /opt/gr-wban/grc/precompiled
 RUN mkdir -p ${WORKSPACE}
 WORKDIR ${WORKSPACE}

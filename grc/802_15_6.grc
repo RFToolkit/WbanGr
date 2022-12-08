@@ -134,6 +134,27 @@ blocks:
     coordinate: [360, 8]
     rotation: 0
     state: enabled
+- name: freqd
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 40,0,1,2
+    label: freqd
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '926'
+    step: '1'
+    stop: '6000'
+    value: '926'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 540.0]
+    rotation: 0
+    state: enabled
 - name: if_gain
   id: variable_qtgui_range
   parameters:
@@ -686,7 +707,7 @@ blocks:
     ignoretag: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samples_per_second: '2000000'
+    samples_per_second: samp_rate
     type: complex
     vlen: '1'
   states:
@@ -1021,7 +1042,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: hackrf
+    args: rtl
     bb_gain0: bb_gain
     bb_gain1: '20'
     bb_gain10: '20'
@@ -1159,7 +1180,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: 2.359397e9
+    freq0: 210*1e6
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6

@@ -4,8 +4,8 @@ import os
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def getGUDID(hex):
-    return getMatchingCase(hex, ROOT_DIR+"/uid.csv")
+def getGUDID(hex, path="/uid.csv"):
+    return getMatchingCase(hex, ROOT_DIR+path)
 
 def tcp(ws, s="", pos=None):
     try:
@@ -19,6 +19,7 @@ def tcp(ws, s="", pos=None):
         if pos: r[-1]=pos
             
         xored=r[2].split(';')
+        
 
         mpkg=ws[0:int(r[-1])][::1]
         nch=''
@@ -32,7 +33,7 @@ def tcp(ws, s="", pos=None):
 
 
         mpkg=ws[int(r[-1]):int(r[-1])+len(r[1])]
-
+        
         for i in range(0, len(xored), 2):
             p=int(xored[i]) ^ int(mpkg[i:i+2], 16)
             if (p >= int(xored[i+1])):

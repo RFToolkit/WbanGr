@@ -29,6 +29,8 @@ xserver-dev: build
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v ${PWD}/grc:/opt/gr-wban \
 		-v /dev/bus/usb:/dev/bus/usb \
+		-v /var/run/dbus/:/var/run/dbus/ \
+		--cap-add=SYS_ADMIN --cap-add=NET_ADMIN \
 		--net=host \
 	${APP_NAME} /bin/bash -c "entrypoint.sh"
 	xhost -

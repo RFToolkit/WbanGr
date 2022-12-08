@@ -20,6 +20,8 @@ Just run shell
 make shell
 ```
 
-## TARGET SIGNAL
+## Web Interface
 
-##  
+## Real time IOT observation
+
+![webui](./assets/web.png)

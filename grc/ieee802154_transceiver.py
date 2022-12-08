@@ -94,6 +94,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self.rx_gain = rx_gain = 5
         self.page_label = page_label = 0
         self.if_gain = if_gain = 30
+        self.freqd = freqd = 926
         self.freq_label = freq_label = freq / 1000000000.0
         self.bt = bt = 15
         self.bb_gain = bb_gain = 30
@@ -351,10 +352,10 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + 'hackrf'
+            args="numchan=" + str(1) + " " + 'rtl'
         )
         self.osmosdr_source_0.set_sample_rate(samp_rate)
-        self.osmosdr_source_0.set_center_freq(2.359397e9, 0)
+        self.osmosdr_source_0.set_center_freq(210*1e6, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
         self.osmosdr_source_0.set_dc_offset_mode(2, 0)
         self.osmosdr_source_0.set_iq_balance_mode(2, 0)
@@ -374,6 +375,13 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
                 window.WIN_HAMMING,
                 6.76))
         self.ieee802_15_4_packet_sink_0 = ieee802_15_4.packet_sink(bt)
+        self._freqd_range = Range(926, 6000, 1, 926, 200)
+        self._freqd_win = RangeWidget(self._freqd_range, self.set_freqd, "freqd", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._freqd_win, 40, 0, 1, 2)
+        for r in range(40, 41):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._freq_label_tool_bar = Qt.QToolBar(self)
 
         if None:
@@ -423,7 +431,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, 2000000,True)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_sub_xx_0 = blocks.sub_ff(1)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
@@ -498,6 +506,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100000, 25000, window.WIN_HAMMING, 6.76))
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_2.set_samp_rate(self.samp_rate)
@@ -524,6 +533,12 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
     def set_if_gain(self, if_gain):
         self.if_gain = if_gain
         self.osmosdr_source_0.set_if_gain(self.if_gain, 0)
+
+    def get_freqd(self):
+        return self.freqd
+
+    def set_freqd(self, freqd):
+        self.freqd = freqd
 
     def get_freq_label(self):
         return self.freq_label

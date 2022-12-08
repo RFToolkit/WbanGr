@@ -65,45 +65,96 @@ def ascii(din):
 def execXOR(line, k1):
     return ''.join(chr(ord(c) ^ ord(k)) for c, k in zip(str(line), cycle(str(k1)))).encode('latin-1', errors='replace').replace(b"?", b" ").decode('utf-8', 'ignore')
 
-def encodingUnpack(line, hex):
-    detection = chardet.detect(line)
-    encoding = detection["encoding"]
-    ids=''
-    # Know plain text 
-    line=tcp(line.hex())[0]
-    line+=''.join(chr(ord(c) ^ ord(k)) for c, k in zip(str(line), cycle(str('0a00')))).encode('latin-1', errors='replace').replace(b"?", b" ").decode('utf-8', 'ignore')
-    line=line.encode(encoding, 'ignore').replace(b'\x00', b'').decode("utf-16be", 'ignore')
-    line=re.sub('([^\u0020-\u007E]{1})', '\g<1>', line)
-    
-    u=line
-    tsTxt=yandex.translate(line)
-    if len(tsTxt):
+def decodeStr(t):
+    try:
+        detection = chardet.detect(t)
+        encoding = detection["encoding"] if detection["encoding"] else 'utf-8'
+        if isinstance(t, bytes):
+            t=t.decode(encoding, 'ignore')
+            t=t.encode('big5', 'ignore').decode('utf-16be', 'ignore')
+            t=yandex.translate(t).encode('utf-16be', 'ignore').decode('utf-8', 'ignore').replace('\x00', '')
 
-        line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'').decode("utf-16", 'ignore')
-        u+=line+"\n"
+        t=re.sub('([^\u0020-\u007E]{2})', ' \g<1>', t)
+        return t
+    except:
+        pass
+    return []
+
+def formatStr(string):
+    string=re.sub('([^\u0020-\u007E]{1})', ' \g<1>', string)
+    string=re.sub('é|è|ê', 'e', string)
+    string=re.sub(r'Dunyu|DAn|Yue|Yi|chi|zhi|Tao|Seminyak|yun|yue|Jiao|Chong|Zhuo|Jin|Huan|Fang|Yu|yan|Zhong|Tong|Hong|yangs|Nian|Tang|Zi|ya|Liu|Hun|hua|tong|Yang|hiko|Zhi|Yan'.lower(), '', string.lower())
+    string=string.replace('ying', 'ti')
+
+    return string
+
+def approxim(u):
+    u=u.replace(' ', '')
+    u=u.encode('utf-8').hex()
+    uid=getGUDID(u, '/dict.txt').split(',')[0].split(':')[1]
+    return bytes.fromhex(uid).decode('utf-8')
+
+def addition(line):
+    txt=''
+    tmp=line.hex()
+    tmp=''.join([ tmp[i:i+2] if int(tmp[i:i+2], 16) > int('1f', 16) and tmp[i:i+2].lower() != '7f' else ',' for i in range(0,len(tmp), 2) ])
+    tmp=tmp.split(',')
+    res=''
+    for h in tmp:
+        if len(h):
+            h=tcp(h)[0]
+            h=' '.join([*filter(lambda x: x, re.split(r'[^a-zA-Z]', h)) ])
+            txt+=approxim(h).replace('\n', ' ')+" "
+            
+    return txt
+
+def encodingUnpack(line, hex):
+    try:
+        detection = chardet.detect(line)
+        encoding = detection["encoding"] if detection["encoding"] else 'latin-1'
+        ids=''
+        o=line
+        # Know plain text 
+        line=tcp(line.hex())[0]
+        line+=''.join(chr(ord(c) ^ ord(k)) for c, k in zip(str(line), cycle(str('0a00')))).encode('latin-1', errors='replace').replace(b"?", b" ").decode('utf-8', 'ignore')
+        line=line.encode(encoding, 'ignore').replace(b'\x00', b'').decode("utf-16be", 'ignore')
+        line=re.sub('([^\u0020-\u007E]{1})', '\g<1>', line)
+        
+        u=line
         tsTxt=yandex.translate(line)
         if len(tsTxt):
+
             line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'').decode("utf-16", 'ignore')
             u+=line+"\n"
-            tsTxt=yandex.translate(u)
-            if len(tsTxt): 
-                line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'')
-                tsTxt=line.decode('utf-8', 'ignore')
-                line=line.decode('utf-16be', 'ignore')
-                line=tsTxt+line
-                line=line.replace(r'\s{2,}', '').strip()
-            line=line.replace('ying', 'ti')
+            tsTxt=yandex.translate(line)
+            if len(tsTxt):
+                line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'').decode("utf-16", 'ignore')
+                u+=line+"\n"
+                tsTxt=yandex.translate(u)
+                if len(tsTxt): 
+                    line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'')
+                    tsTxt=line.decode('utf-8', 'ignore')
+                    line=line.decode('utf-16be', 'ignore')
+                    line=tsTxt+line
+                    line=line.replace(r'\s{2,}', '').strip()
+                line=line.replace('ying', 'ti')
 
-        if (line):
-            line=GoogleTranslator(source='auto', target='fr').translate(line)
-            # GUID
-            ids=getGUDID(line.encode('utf-8', 'ignore').hex()[4:4+8])
-            print(ids)
-            line=re.sub('([^\u0020-\u007E]{1})', '', line)
+            if (line):
+                line=GoogleTranslator(source='auto', target='fr').translate(line)
+                # GUID
+                ids=getGUDID(line.encode('utf-8', 'ignore').hex()[4:4+8])
+                print(ids)
+                line=re.sub('([^\u0020-\u007E]{1})', '', line)
 
-        hexdump(ids+line)
-        return ids+line
+            hexdump(ids+line+addition(o))
+            return ids+line
+
+    except Exception as e:
+        print(e)
+        pass
     return 0
+
+
 
 def translate(line, res):
     try:

@@ -44,8 +44,28 @@ const chart=Highcharts.chart('container', {
     },
     data: [],
     nodes: []
+  },{
+    marker: {
+      radius: 5,
+    },
+    dataLabels: {
+      enabled: true,
+      linkFormat: '',
+      allowOverlap: true
+    },
+    data: [],
+    nodes: []
   }]
 });
+
+const bleUid = (response) => {
+  response.forEach(resp => {
+    console.log(String(resp['manufact']), "", String(resp['services']))
+    chart.series[1].addPoint([resp.addr, resp.uuid[0]+",RSSI:"+resp.rssi], true)
+  });
+  
+}
+
 fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
     .then((response) => response.body)
     .then((body) => {
@@ -53,16 +73,30 @@ fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control
         reader.read().then(function processText({ done, value }) {
             /* … */
             if(value) {
-                let payload=Array.from(value).map(x=> String.fromCharCode(x)).join('')
+                let payload=Array.from(value).map(x=> String.fromCharCode(x)).join('').trim()
                 payload=JSON.parse(payload)
                 console.log(payload['payload'])
                 if (payload.src == null) payload['src'] = "0x0000"
                 if (payload.dst == null) payload['dst'] = "0x0001"
-                if (payload.panid == null) payload['panid'] = "0x0001"
-                chart.series[0].addPoint([[payload.panid, payload.src], [payload.panid, payload.dst]], true)
+                //if (payload.panid == null) payload['panid'] = "0x0001"
+                chart.series[0].addPoint([[payload.src, payload.panid], [payload.dst, payload.panid]], true)
+                /*fetch('http://127.0.0.1:5000/getble', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
+                  .then((response) => response.json())
+                  .then(bleUid);*/
+                /*payloads=Array.from(payloads.match(/{[^}]+}/g))
+                payloads.forEach(payload => {
+                    payload=JSON.parse(payload)
+                    console.log(payload['payload'])
+                    if (payload.src == null) payload['src'] = "0x0000"
+                    if (payload.dst == null) payload['dst'] = "0x0001"
+                    //if (payload.panid == null) payload['panid'] = "0x0001"
+                    chart.series[0].addPoint([[payload.panid, payload.src], [payload.panid, payload.dst]], true)
+                });*/
             }
-            Promise.resolve(sleep(1000));
+            Promise.resolve(sleep(100));
             return reader.read().then(processText);
         })
         // …
     });
+
+    
