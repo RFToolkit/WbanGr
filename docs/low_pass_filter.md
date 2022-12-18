@@ -2,4 +2,4 @@
 
 The low pass filter allows for a given referential, namely that of your current band, to study connections to higher frequency modules
 
-![webui](./assets/from_baseband_to_low.png)
+![filter](../assets/from_baseband_to_low.png)
