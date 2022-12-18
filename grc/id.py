@@ -6,8 +6,8 @@ u=u.encode('utf-8').hex()
 
 #print(getGUDID(u, './perso/'))
 
-with open('./perso/dict.txt', 'rb') as d:
-    with open('./dict.txt', 'a+') as d2:
+with open('./dict/med.txt', 'rb') as d:
+    with open('./dict/base.hex', 'w') as d2:
         for e in d.readlines():
             d2.write(e.hex()+"\n")
 

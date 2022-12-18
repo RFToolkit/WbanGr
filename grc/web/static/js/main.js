@@ -46,7 +46,7 @@ const chart=Highcharts.chart('container', {
     nodes: []
   },{
     marker: {
-      radius: 5,
+      radius: 9,
     },
     dataLabels: {
       enabled: true,
@@ -78,11 +78,9 @@ fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control
                 console.log(payload['payload'])
                 if (payload.src == null) payload['src'] = "0x0000"
                 if (payload.dst == null) payload['dst'] = "0x0001"
-                //if (payload.panid == null) payload['panid'] = "0x0001"
-                chart.series[0].addPoint([[payload.src, payload.panid], [payload.dst, payload.panid]], true)
-                /*fetch('http://127.0.0.1:5000/getble', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
-                  .then((response) => response.json())
-                  .then(bleUid);*/
+                if (payload.panid == null) payload['panid'] = "0x0002"
+                chart.series[0].addPoint([[payload.src], [payload.dst], [payload.panid]], true)
+                
                 /*payloads=Array.from(payloads.match(/{[^}]+}/g))
                 payloads.forEach(payload => {
                     payload=JSON.parse(payload)
@@ -93,7 +91,7 @@ fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control
                     chart.series[0].addPoint([[payload.panid, payload.src], [payload.panid, payload.dst]], true)
                 });*/
             }
-            Promise.resolve(sleep(100));
+            //Promise.resolve(sleep(100));
             return reader.read().then(processText);
         })
         // …
