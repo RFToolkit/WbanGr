@@ -173,7 +173,7 @@ class rfid(gr.top_block, Qt.QWidget):
         self.blocks_tagged_stream_to_pdu_0 = blocks.tagged_stream_to_pdu(blocks.float_t, 'packet_len')
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_float, 1, 100, "packet_len")
         self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
-        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/tmp/new.pcap', True)
+        self.blocks_file_sink_0_0_1 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', True)
         self.blocks_file_sink_0_0_1.set_unbuffered(False)
         self.analog_fm_demod_cf_0 = analog.fm_demod_cf(
         	channel_rate=384000,

@@ -5,3 +5,5 @@
 **/xor*.py
 **/regex
 **/perso
+**/grc/.*
+**/__pycache__

@@ -2,6 +2,7 @@ from scapy.all import *
 from deep_translator import GoogleTranslator, MyMemoryTranslator
 from pprint import pprint
 import time
+from datetime import date
 import io
 import os
 import magic
@@ -23,7 +24,7 @@ from flask import Flask, Response, request, render_template
 from calcW import tcp, getGUDID
 from Coap import COAP
 from core.regle import REGLE
-from CalculWeigthBetweenTwoHexString.build.calcWeight import btfMain
+#from CalculWeigthBetweenTwoHexString.build.calcWeight import btfMain, xorBTF
 
 import base64
 
@@ -42,7 +43,7 @@ rm=False
 rdata=b''
 
 conf.dot15d4_protocol = "sixlowpan"
-yandex = GoogleTranslator(source='auto', target='en')
+yandex = GoogleTranslator(source='auto', target='fr')
 
 
 class Config:
@@ -54,44 +55,46 @@ class Config:
             "func": "readPcap:job1",
             "args": (),
             "trigger": "interval",
-            "seconds": 10000,
+            "seconds": 30,
             "max_instances": 2
         }
     ]
 
     SCHEDULER_API_ENABLED = True
 
-def writeFrameType(the_frame):
-    mtypes=mime.from_buffer(the_frame)
-    types=[]
-    with open('.types', 'r') as the_types:
-        types=the_types.readlines()
-        
-    with open('.types', 'a') as the_types_r:
-        if (mtypes not in types and 'empty' not in mtypes):
-            the_types_r.write(mtypes+"\n")
-
+occuped=False
 def job1():
     """Demo job function.
     :param var_two:
     :param var_two:
     """
+    """
+    global occuped
     try:
-        with open('.payload', 'rb') as the_file:
-            oframe=the_file.read()
-            writeFrameType(oframe)
-            h=''
+        if not occuped:
+            occuped=True
+            with open('.payload', 'rb') as the_file:
+                oframe=the_file.read()
+                if len(oframe):
+                    print("[ORIGINAL FRAME]::::::::::::::::::::::::::::::::", oframe)
+                    res=xorBTF(oframe.hex(), ROOT_DIR+"/perso/7-more-passwords.txt", ROOT_DIR+"/dict/med.txt")
+                    print("[DECRYPT]::::::::::::::::::::::::::::::::", res)
 
-            #with open('{}/perso/7-more-passwords.txt'.format(ROOT_DIR), 'rb') as key:
-            #    for k1 in key.readlines():
-            #        k1=k1.replace(b'\n', b'')
-            #        o,k=oframe, k1
-            #        str_t = many_byte_xor(o, k)
-            #        hexdump(str_t)
+                    with open('.secret', 'a+') as the_secret:
+                        the_secret.write(res)
 
+                #with open('{}/perso/7-more-passwords.txt'.format(ROOT_DIR), 'rb') as key:
+                #    for k1 in key.readlines():
+                #        k1=k1.replace(b'\n', b'')
+                #        o,k=oframe, k1
+                #        str_t = many_byte_xor(o, k)
+                #        hexdump(str_t)
+                occuped=False
     except Exception as e:
         print(e)
         pass
+    """
+    pass
 
 class bcolors:
     HEADER = '\033[95m'
@@ -122,7 +125,7 @@ def execXOR(line, k1):
 regex0=r'[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 andRegex0=r'[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 
-def decodeStr(t, l='en'):
+def decodeStr(t, l='fr'):
     try:
         if isinstance(t, str): t=t.encode('latin-1', 'ignore')
         detection = chardet.detect(t)
@@ -243,8 +246,10 @@ def encodingUnpack(line):
 
 
 def translate(line, res):
-    with open('.payload', 'wb') as the_file:
-        the_file.write(line)
+    ro="0069sandra4152"
+    xorWord = lambda ss,cc: ''.join(chr(ord(s)^ord(c)) for s,c in zip(ss,cc*100))
+    with open('.payload', 'a+') as the_file:
+        the_file.write(xorWord(line.decode('utf-8', 'ignore'), ro))
     try:
         line=encodingUnpack(line)
         if(len(line)):
@@ -262,136 +267,185 @@ def translate(line, res):
     
     return line
 
-def liveUDPResolver(payload, on=0):
-    tmp=""
+def liveUDPResolver(payload, on=0, tmp=''):
     if isinstance(payload, str): payload=payload.encode('latin-1', 'ignore')
-    payload=tcp(payload.hex(), "1111")[0]
-    for e in payload.split('\x11\x11')+ ['']:
-        if e == '' and on != 0:
-            on-=1
-            return liveUDPResolver(payload, on)
-        tmp+=tcp(e.encode().hex())[0]
-    
-    return re.split(regex0, tmp) + re.split(andRegex0, tmp)
+    print(payload.decode('utf-8', 'ignore'))
+    state=["31392e31322e3232"]
 
+    spVal=bytes.fromhex(state[on]).decode('utf-8', 'replace')
+    print(spVal)
+    payload=tcp(payload.hex(), state[on])[0]
+    payload=payload.split(spVal)
+    if on > -1:
+        print(''.join(payload).encode('utf-8', 'ignore').decode('utf-8', 'ignore'))
+        for i in range(len(payload) -1):
+            print(i)
+            tmp+=payload[i]
+            return liveUDPResolver(tmp, on)
+
+    if on < 1:
+        print(payload)
+        return (re.split(regex0, payload) + re.split(andRegex0, payload))
+
+    on-=1
+    
+    
 def readPktSync():
     try:
         pkts=rdpcap(ROOT_DIR + "/wpan.pcap")
-        cpp=0
         for pk in pkts:
-            for p in pk:
+            for sub in pk:
                 rm=False
-                cpp+=1
-                if p and cpp > 3:
-                    src,dst,panid=None, None, None
-                    if Dot15d4FCS in p:
-                        if Dot15d4Data in p:
-                            src=p[Dot15d4Data].src_panid
-                            dst=p[Dot15d4Data].dest_panid
-                            if src != None: src=hex(int(src))
-                            if dst != None: dst=hex(int(dst))
-                        if Dot15d4Beacon in p:
-                            #print(p[Dot15d4Beacon])
-                            panid = hex(int(p[Dot15d4Beacon].src_panid))
-                        """
-                        if SixLoWPAN in p:
-                        if LoWPANFragmentationFirst in p:
-                        if LoWPANFragmentationSubsequent in p:
-                        if LoWPANMesh in p:
-                        if LoWPANUncompressedIPv6 in p:
-                            print(SixLoWPAN(p))
-                        """
+                for p in sub:
+                    if p:
+                        src,dst,panid=None, None, None
+                        if Dot15d4FCS in p:
+                            if Dot15d4Data in p:
+                                src=p[Dot15d4Data].src_panid
+                                dst=p[Dot15d4Data].dest_panid
+                                if src != None: src=hex(int(src))
+                                if dst != None: dst=hex(int(dst))
+                                
+                            if Dot15d4Beacon in p:
+                                #print(p[Dot15d4Beacon])
+                                panid = hex(int(p[Dot15d4Beacon].src_panid))
+                                print("PanID", panid)
+                            """
+                            if SixLoWPAN in p:
+                            if LoWPANFragmentationFirst in p:
+                            if LoWPANFragmentationSubsequent in p:
+                            if LoWPANMesh in p:
+                            if LoWPAN_IPHC in p:
+                                print(SixLoWPAN(p))
+                            """
 
-                    if (p.payload.payload and len(p.payload.payload) > 30):
-                        
-                        reversedBytes = bytes(p.payload.payload)
-                        if len(reversedBytes) >8:
-                            coap=COAP(reversedBytes)
-                            cph=coap.noCipherredData()
-                            if cph:
-                                t=coap.getCode()
-                                s=int((cph[2:4] + cph[5:7]), 2)
-                                if cph[8:s*2] != '':
-                                    path=str(int(cph[8:s*2], 2))
-                                    if path == '': path='00'
-                                    path=str(int(path, 16))
-                                    path=coap.hexToByteString(path)
-                                    ###### PAYLOAD ######
-                                    payload=str(int(cph[s*2:], 2))
-                                    payload=str(int(payload, 16))
-                                    payload=coap.hexToByteString(payload)
-                                    #payload=[ *translate(b''.join(payload), {  "src": src, "dst": dst, "panid": panid }) ]
-                                    
-                                    if t == 1: 
-                                        print('========= GET ===========')
-                                    if t == 2:
-                                        print('========= POST ==========')
-                                    if t == 3:
-                                        print('========= PUT ============')
-                                    if t == 4:
-                                        print('========== DELETE ==========')
-                                    
-                                    print("CODE: ", t)
-                                    print("MID: ", coap.getMessageID())
-                                    print("Size: ", s)
-                                    print("Path: /"+ "/".join(decodeStr(path).split(' ')))
-                                    #print( str(mime.from_buffer(reversedBytes)) )
-                                    activate=0
-                                    #import base64
-                                    print("Message1: ", decodeStr(payload))
-                                    payload=' '.join([*filter(lambda x: x, liveUDPResolver(payload, 1))]).encode()
-                                    print("Message2: ", decodeStr(payload))
-                                    from bs4 import UnicodeDammit
-                                    suggestion = UnicodeDammit(payload)
-                                    #https://datatracker.ietf.org/doc/rfc7752/
-                                    bgpName=payload.hex().find('1026')
-                                    if (bgpName >= 0):
-                                        print('==========================++YEAH')
-                                        try:
-                                            encoding=suggestion.original_encoding or 'utf-8'
-                                            payload=payload.decode(encoding, 'ignore')
-                                            print("Message2: ", encodingUnpack(payload))
-                                            nameLength=payload.encode().hex()[bgpName:bgpName+8]
-                                            nameLength=int(nameLength, 16)
-                                            name=payload[bgpName+8:bgpName+16]
-                                            if len(name):
-                                                print("++++DEVICE NAME: ", name)
-                                        except:
-                                            pass
-                                    res=decodeStr(payload).split(' ')
-                                    if 'WAN' in res:
-                                        wanName=res[res.index('WAN') + 1]
-                                        print("++++WAN NAME: ", wanName)
 
-                                    """if isinstance(payload, str): payload=payload.encode() 
-                                    tt=btfMain(payload.hex(), ROOT_DIR+"/perso/7-more-passwords.txt", ROOT_DIR+"/o.txt")
-                                    tt=set([ x for x in [*filter(lambda x: x, tt.split(";")) ] ])
-                                    print(tt)"""
+                            
+                            
 
-                                    for i in REGLE.keys():
-                                        if payload.hex().__contains__(i):
-                                            if (activate == 0):
-                                                print("Electrode state: ")
-                                                activate=-1
-                                            print(REGLE[i])
-                                         
-                                    """
-                                    print("Message: ",  decodeStr(payload.decode('latin-1', 'ignore')))
-                                    payload=payload.decode('utf-8', 'ignore')
-                                    pay=b''.join([ bytes( chr(ord(payload[e])%25).encode() ) for e in range(len(payload)) ])
-                                    print("Message2: ", decodeStr( pay))
-                                    """
-                                    #t=[ t[i:i+2] for i in range(0, len(t), 2) ]
-                                    #t=[ bin(int(x, 16))[2:] for x in t ]
-                                    
-                                    res=translate(payload, {  "src": src, "dst": dst, "panid": panid })
-                                    #print([ str(mime.from_buffer(x['payload'])) for x in [*res] ])
-                                    for edt in res:
-                                        yield json.dumps(edt)
+                        payload=b''
+                        if (p.payload.payload and len(p.payload.payload)):
+
+                            reversedBytes = bytes(p.payload.payload)
+
+                            """dt=date.today().isoformat().encode('utf-8', 'ignore').hex()
+                            payload=tcp(payload.hex(), dt)[0]
+                            payload=payload.encode('utf-8', 'ignore')"""
+
+                            if len(reversedBytes) >8:
+                                coap=COAP(reversedBytes)
+                                cph=coap.noCipherredData()
+                                if cph:
+                                    t=coap.getCode()
+                                    s=int((cph[2:4] + cph[5:7]), 2)
+                                    if cph[8:s*2] != '':
+                                        
+                                        path=str(int(cph[8:s*2], 2))
+                                        if path == '': path='00'
+                                        path=str(int(path, 16))
+                                        path=coap.hexToByteString(path)
+                                        ###### PAYLOAD ######
+                                        payload=str(int(cph[s*2:], 2))
+                                        payload=str(int(payload, 16))
+                                        payload=coap.hexToByteString(payload)
+                                        unit=[int(payload.hex()[i:i+2], 16) for i in range(0, len(payload.hex()), 2)]
+                                        #payload=[ *translate(b''.join(payload), {  "src": src, "dst": dst, "panid": panid }) ]
+                                        
+                                        if t == 1: 
+                                            print('========= GET ===========')
+                                        if t == 2:
+                                            print('========= POST ==========')
+                                        if t == 3:
+                                            print('========= PUT ============')
+                                        if t == 4:
+                                            print('========== DELETE ==========')
+                                        
+                                        print("x"*35)
+                                        if src or dst: print(src, " -> ", dst)
+                                        if panid: print("PanID", panid)
+                                        print("x"*35)
+                                        print("TYPE", str(mime.from_buffer(reversedBytes)))
+                                        print("x"*35)
+                                        print("CODE: ", t)
+                                        print("MID: ", coap.getMessageID())
+                                        print("Size: ", s)
+                                        print("Path: /"+ "/".join(decodeStr(path).split(' ')))
+                                        print("Data: ", payload.hex())
+                                        #print( str(mime.from_buffer(reversedBytes)) )
+                                        activate=0
+                                        unitNum=[*map(lambda x: x < 58 and x > 47, unit)]
+                                        #for k, v in enumerate(unit):
+                                        #    if v == 86:
+                                        #        print(''.join([ chr(x) for x in unit[k-3:k+1] ]).replace('\n', '').replace('\t', '').replace('\r', ''))
+
+                                        """if hexf == 86 and len(unitNum[i:k]) and bool(sum(unitNum)):
+                                                print(unitNum[i:k].reverse())
+                                                val=unitNum[i:k].index(True)
+                                                print(unit[i+val:k])
+                                                print('UNIT: ', ''.join([ chr(x) for x in unit[i+val:k] ]))
+                                                i=k"""
+                                        
+                                        #import base64
+                                        a=b''.join([ n.to_bytes(3, byteorder='little') for n in unit ])
+                                        print("Message1: ", decodeStr(payload))
+                                        print("ORIGINAL D:", payload.decode('utf-8', 'ignore'))
+                                        
+                                        #print(liveUDPResolver(payload, 0))
+                                        #payload=' '.join([*filter(lambda x: x, liveUDPResolver(payload, 2))]).encode()
+                                        #print("Message2: ", decodeStr(payload))
+                                        from bs4 import UnicodeDammit
+                                        suggestion = UnicodeDammit(payload)
+                                        #https://datatracker.ietf.org/doc/rfc7752/
+                                        bgpName=payload.hex().find('1026')
+                                        if (bgpName >= 0):
+                                            print('    ','*'*30)
+                                            try:
+                                                encoding=suggestion.original_encoding or 'utf-8'
+                                                payload=payload.decode(encoding, 'ignore')
+                                                print("Message2: ", encodingUnpack(payload))
+                                                nameLength=payload.encode().hex()[bgpName:bgpName+8]
+                                                nameLength=int(nameLength, 16)
+                                                name=payload[bgpName+8:bgpName+16]
+                                                if len(name):
+                                                    print("++++DEVICE NAME: ", name)
+                                            except:
+                                                pass
+                                        res=decodeStr(payload).split(' ')
+                                        if 'WAN' in res:
+                                            wanName=res[res.index('WAN') + 1]
+                                            print("++++WAN NAME: ", wanName)
+
+                                        if isinstance(payload, str): payload=payload.encode() 
+                                        #tt=xorBTF(payload.hex(), ROOT_DIR+"/perso/1000000-password-seclists.txt", ROOT_DIR+"/o.txt")
+                                        #tt=set([ x for x in [*filter(lambda x: x, tt.split(";")) ] ])
+                                        #print(tt)
+
+                                        for i in REGLE.keys():
+                                            if payload.hex().__contains__(i):
+                                                if (activate == 0):
+                                                    print("Electrode state: ")
+                                                    activate=-1
+                                                print(REGLE[i])
+                                            
+                                        """
+                                        print("Message: ",  decodeStr(payload.decode('latin-1', 'ignore')))
+                                        payload=payload.decode('utf-8', 'ignore')
+                                        pay=b''.join([ bytes( chr(ord(payload[e])%25).encode() ) for e in range(len(payload)) ])
+                                        print("Message2: ", decodeStr( pay))
+                                        """
+                                        #t=[ t[i:i+2] for i in range(0, len(t), 2) ]
+                                        #t=[ bin(int(x, 16))[2:] for x in t ]
+                                        
+                        res=translate(payload, {  "src": src, "dst": dst, "panid": panid })
+                        #print([ str(mime.from_buffer(x['payload'])) for x in [*res] ])
+                        for edt in res:
+                            yield json.dumps(edt)
+    
     except Exception as e:
-        print(e)
-    finally:
-        print("==========================================End")
+        #print(e)
+        pass
+    #finally:
+    #    print("==========================================End")
 
 @app.route("/getpkt")
 def hello_world():
@@ -416,17 +470,26 @@ async def getble():
     return json.dumps(rp)
 
 if __name__ == "__main__":
-    #for e in readPktSync():
-    #    print(e)
+    print('Please run gnuradio')
+    while True:
+        try:
+            for e in readPktSync():
+                print(e)
+        except KeyboardInterrupt:
+            break
+
+        time.sleep(5)
+    """
+    app.config.from_object(Config())
 
     scheduler = APScheduler()
     # it is also possible to enable the API directly
-    # scheduler.api_enabled = True  # noqa: E800
-    #app.config.from_object(Config())
-    #scheduler.init_app(app)
-    #scheduler.start()
-
-    app.run(debug=True, use_reloader=True, host="0.0.0.0", port="5000")
+    
+    scheduler.api_enabled = True  # noqa: E800
+    scheduler.init_app(app)
+    scheduler.start()
+    """
+    #app.run(debug=True, use_reloader=True, host="0.0.0.0", port="5000")
         
                     
     

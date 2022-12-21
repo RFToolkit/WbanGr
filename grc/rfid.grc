@@ -217,7 +217,7 @@ blocks:
     alias: ''
     append: 'True'
     comment: ''
-    file: /tmp/new.pcap
+    file: /opt/gr-wban/wpan.pcap
     type: byte
     unbuffered: 'False'
     vlen: '1'
