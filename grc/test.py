@@ -30,6 +30,7 @@ import sip
 from gnuradio import analog
 import math
 from gnuradio import blocks
+import pmt
 from gnuradio import digital
 from gnuradio import filter
 from gnuradio import gr
@@ -38,7 +39,6 @@ import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
-from gnuradio import soapy
 from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
 import foo
@@ -121,20 +121,6 @@ class test(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.soapy_hackrf_source_0 = None
-        dev = 'driver=hackrf'
-        stream_args = ''
-        tune_args = ['']
-        settings = ['']
-
-        self.soapy_hackrf_source_0 = soapy.source(dev, "fc32", 1, '',
-                                  stream_args, tune_args, settings)
-        self.soapy_hackrf_source_0.set_sample_rate(0, samp_rate)
-        self.soapy_hackrf_source_0.set_bandwidth(0, 0)
-        self.soapy_hackrf_source_0.set_frequency(0, freq)
-        self.soapy_hackrf_source_0.set_gain(0, 'AMP', False)
-        self.soapy_hackrf_source_0.set_gain(0, 'LNA', min(max(16, 0.0), 40.0))
-        self.soapy_hackrf_source_0.set_gain(0, 'VGA', min(max(16, 0.0), 62.0))
         self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(0.000150, 1)
         self._rx_gain_range = Range(0, 50, 1, 5, 200)
         self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "'rx_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
@@ -296,6 +282,8 @@ class test(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate*4,True)
         self.blocks_sub_xx_0 = blocks.sub_ff(1)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/opt/gr-wban/wpan.wav', True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
         self.blocks_file_sink_0_0_1_0.set_unbuffered(True)
         self._bb_gain_range = Range(0, 50, 1, 30, 200)
@@ -316,6 +304,7 @@ class test(gr.top_block, Qt.QWidget):
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.blocks_sub_xx_0, 0))
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.single_pole_iir_filter_xx_0, 0))
         self.connect((self.analog_simple_squelch_cc_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
         self.connect((self.blocks_sub_xx_0, 0), (self.digital_clock_recovery_mm_xx_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.digital_clock_recovery_mm_xx_0, 0), (self.digital_symbol_sync_xx_0, 0))
@@ -325,7 +314,6 @@ class test(gr.top_block, Qt.QWidget):
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_const_sink_x_1_1, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_sub_xx_0, 1))
-        self.connect((self.soapy_hackrf_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
 
 
     def closeEvent(self, event):
@@ -350,7 +338,6 @@ class test(gr.top_block, Qt.QWidget):
     def set_freq(self, freq):
         self.freq = freq
         self.set_freq_label(self.freq / 1000000000.0)
-        self.soapy_hackrf_source_0.set_frequency(0, self.freq)
 
     def get_symb0(self):
         return self.symb0
@@ -372,7 +359,6 @@ class test(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate*4)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.samp_rate/2, self.samp_rate/4, window.WIN_HAMMING, 6.76))
         self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
-        self.soapy_hackrf_source_0.set_sample_rate(0, self.samp_rate)
 
     def get_rx_gain(self):
         return self.rx_gain

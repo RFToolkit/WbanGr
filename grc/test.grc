@@ -500,7 +500,7 @@ blocks:
     bus_structure: null
     coordinate: [224, 204.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_sub_xx_0
   id: blocks_sub_xx
   parameters:
@@ -2477,29 +2477,6 @@ blocks:
     coordinate: [832, 752.0]
     rotation: 0
     state: disabled
-- name: soapy_hackrf_source_0
-  id: soapy_hackrf_source
-  parameters:
-    affinity: ''
-    alias: ''
-    amp: 'False'
-    bandwidth: '0'
-    center_freq: freq
-    comment: ''
-    dev_args: ''
-    gain: '16'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: samp_rate
-    type: fc32
-    vga: '16'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [232, 180.0]
-    rotation: 0
-    state: true
 
 connections:
 - [analog_quadrature_demod_cf_0, '0', blocks_sub_xx_0, '0']
@@ -2602,7 +2579,6 @@ connections:
 - [single_pole_iir_filter_xx_0_0_0_0_0_2, '0', blocks_sub_xx_0_0_0_0_0_2, '1']
 - [single_pole_iir_filter_xx_0_0_0_0_0_3, '0', blocks_sub_xx_0_0_0_0_0_3, '1']
 - [single_pole_iir_filter_xx_0_0_1, '0', blocks_sub_xx_0_0_1, '1']
-- [soapy_hackrf_source_0, '0', analog_simple_squelch_cc_0, '0']
 
 metadata:
   file_format: 1
