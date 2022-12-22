@@ -10,6 +10,7 @@ osmosdr () {
     make
     make install
     ldconfig
+    ls
 }
 
 gr_ieee_802_15_4 () {
@@ -47,11 +48,25 @@ foo () {
     ldconfig
 }
 
+## Local
+calcWeigth () {
+    git clone https://github.com/Maissacrement/CalculWeigthBetweenTwoHexString.git
+    cd CalculWeigthBetweenTwoHexString
+    mkdir build
+    cd build
+    cmake ..
+    make
+    ls
+    cp ./calcWeight.cpython-38-x86_64-linux-gnu.so /usr/local/lib/python3.8/dist-packages/
+    ldconfig
+}
+
 main () {
     osmosdr
     gr_ieee_802_15_4
     rf_tap
     foo
+    calcWeigth
 }
 
 main

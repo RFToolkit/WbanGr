@@ -1,4 +1,7 @@
-from CalculWeigthBetweenTwoHexString.build.calcWeight import getEntry, getEntryMatch, getMatchingCase
+try:
+    from CalculWeigthBetweenTwoHexString.build.calcWeight import getEntry, getEntryMatch, getMatchingCase
+except:
+    from calcWeight import getEntry, getEntryMatch, getMatchingCase
 import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
