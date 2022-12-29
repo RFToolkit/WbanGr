@@ -12,6 +12,17 @@ osmosdr () {
     ldconfig
     ls
 }
+adaptkarel () {
+    cd /opt
+    git clone https://github.com/karel/gr-adapt
+    cd gr-adapt
+    mkdir build
+    cd build
+    cmake ../
+    make -j$(nproc)
+    make install
+    ldconfig
+}
 
 gr_ieee_802_15_4 () {
     cd /opt
@@ -62,6 +73,7 @@ calcWeigth () {
 }
 
 main () {
+    adaptkarel
     osmosdr
     gr_ieee_802_15_4
     rf_tap

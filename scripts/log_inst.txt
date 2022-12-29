@@ -1,0 +1,271 @@
+-- Build type not specified: defaulting to release.
+-- Using GMP.
+-- User set python executable /usr/bin/python3
+-- Checking for module 'sndfile'
+--   No package 'sndfile' found
+-- Could NOT find SNDFILE (missing: SNDFILE_LIBRARIES SNDFILE_INCLUDE_DIRS) 
+-- Extracting version information from git describe...
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Found pybind11: /usr/include (found version "2.9.1")
+-- Could NOT find Armadillo (missing: ARMADILLO_INCLUDE_DIR) 
+-- Using install prefix: /usr/local
+-- Building for version: 573c1281 / 0.1.0git
+-- No C++ unit tests... skipping
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Python checking for pygccxml - found
+-- Configuring done
+-- Generating done
+[  0%] Built target pygen_apps_9a6dd
+[  3%] Built target adapt_docstrings
+[ 11%] Built target pygen_python_6be6e
+Consolidate compiler generated dependencies of target gnuradio-adapt
+[ 15%] Linking CXX shared library libgnuradio-adapt.so
+[  3%] Linking CXX shared library libgnuradio-adapt.so
+-- Build type not specified: defaulting to release.
+-- Using GMP.
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found suitable version "1.74.0", minimum required is "1.74.0") found components: date_time program_options system regex thread unit_test_framework 
+-- User set python executable /usr/bin/python3
+-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable exact version "3.10.6") 
+-- Checking for module 'sndfile'
+--   No package 'sndfile' found
+-- Could NOT find SNDFILE (missing: SNDFILE_LIBRARIES SNDFILE_INCLUDE_DIRS) 
+-- Extracting version information from git describe...
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found suitable version "1.74.0", minimum required is "1.65") found components: chrono thread system 
+-- 
+-- The build system will automatically enable all components.
+-- Use -DENABLE_DEFAULT=OFF to disable components by default.
+-- Searching for GNURadio-Blocks...
+-- Checking for module 'sndfile'
+--   No package 'sndfile' found
+-- Could NOT find SNDFILE (missing: SNDFILE_LIBRARIES SNDFILE_INCLUDE_DIRS) 
+--  Found GNURadio-Blocks: 1
+-- Searching for IQ Balance...
+--  Found IQ Balance: 1
+-- Searching for UHD Drivers...
+-- Checking for module 'uhd'
+--   No package 'uhd' found
+--  Found UHD Driver: 0
+-- Searching for UHD Block...
+--  Found UHD Block: 1
+-- Searching for Volk...
+--  Found Volk: 1
+-- Checking for module 'librtlsdr'
+--   No package 'librtlsdr' found
+-- librtlsdr not found.
+-- Checking for module 'libhackrf'
+--   No package 'libhackrf' found
+-- Could NOT find LibHackRF (missing: LIBHACKRF_LIBRARIES LIBHACKRF_INCLUDE_DIRS) 
+-- Checking for module 'libairspy'
+--   No package 'libairspy' found
+-- Could NOT find LibAIRSPY (missing: LIBAIRSPY_LIBRARIES LIBAIRSPY_INCLUDE_DIRS) 
+-- Checking for module 'libairspyhf'
+--   No package 'libairspyhf' found
+-- Could NOT find LibAIRSPYHF (missing: LIBAIRSPYHF_LIBRARIES LIBAIRSPYHF_INCLUDE_DIRS) 
+-- Checking for module 'libbladeRF'
+--   No package 'libbladeRF' found
+-- libbladeRF not found.
+-- Could NOT find SoapySDR (missing: SoapySDR_DIR)
+-- Checking for module 'libfreesrp'
+--   No package 'libfreesrp' found
+-- libfreesrp not found.
+-- Checking for module 'libxtrx'
+--   No package 'libxtrx' found
+-- libxtrx not found.
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.6", minimum required is "3") 
+-- Found pybind11: /usr/include (found version "2.9.1")
+-- 
+-- Configuring Python support support...
+--   Dependency PYTHONLIBS_FOUND = TRUE
+--   Dependency pybind11_FOUND = 1
+--   Enabling Python support support.
+--   Override with -DENABLE_PYTHON=ON/OFF
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- 
+-- Configuring high resolution timing...
+--   High resolution timing supported through clock_gettime.
+-- 
+-- Configuring Osmocom IQ Imbalance Correction support...
+--   Dependency gnuradio-iqbalance_FOUND = 1
+--   Enabling Osmocom IQ Imbalance Correction support.
+--   Override with -DENABLE_IQBALANCE=ON/OFF
+-- 
+-- Configuring FUNcube Dongle support...
+--   Dependency GNURADIO_FUNCUBE_FOUND = TRUE
+--   Enabling FUNcube Dongle support.
+--   Override with -DENABLE_FCD=ON/OFF
+-- 
+-- Configuring IQ File Source & Sink support...
+--   Dependency gnuradio-blocks_FOUND = 1
+--   Enabling IQ File Source & Sink support.
+--   Override with -DENABLE_FILE=ON/OFF
+-- 
+-- 
+-- Configuring Osmocom RTLSDR support...
+--   Dependency LIBRTLSDR_FOUND = FALSE
+--   Disabling Osmocom RTLSDR support.
+--   Override with -DENABLE_RTL=ON/OFF
+-- 
+-- Configuring RTLSDR TCP Client support...
+--   Dependency gnuradio-blocks_FOUND = 1
+--   Enabling RTLSDR TCP Client support.
+--   Override with -DENABLE_RTL_TCP=ON/OFF
+-- 
+-- Configuring Ettus USRP Devices support...
+--   Dependency UHD_FOUND = 0
+--   Dependency gnuradio-uhd_FOUND = 1
+--   Disabling Ettus USRP Devices support.
+--   Override with -DENABLE_UHD=ON/OFF
+-- 
+-- Configuring HackRF & rad1o Badge support...
+--   Dependency LIBHACKRF_FOUND = FALSE
+--   Disabling HackRF & rad1o Badge support.
+--   Override with -DENABLE_HACKRF=ON/OFF
+-- 
+-- Configuring nuand bladeRF support...
+--   Dependency LIBBLADERF_FOUND = FALSE
+--   Disabling nuand bladeRF support.
+--   Override with -DENABLE_BLADERF=ON/OFF
+-- 
+-- Configuring RFSPACE Receivers support...
+--   Enabling RFSPACE Receivers support.
+--   Override with -DENABLE_RFSPACE=ON/OFF
+-- 
+-- Configuring AIRSPY Receiver support...
+--   Dependency LIBAIRSPY_FOUND = FALSE
+--   Disabling AIRSPY Receiver support.
+--   Override with -DENABLE_AIRSPY=ON/OFF
+-- 
+-- Configuring AIRSPY HF+ Receiver support...
+--   Dependency LIBAIRSPYHF_FOUND = FALSE
+--   Disabling AIRSPY HF+ Receiver support.
+--   Override with -DENABLE_AIRSPYHF=ON/OFF
+-- 
+-- Configuring SoapySDR support support...
+--   Dependency SoapySDR_FOUND = 0
+--   Disabling SoapySDR support support.
+--   Override with -DENABLE_SOAPY=ON/OFF
+-- 
+-- Configuring Red Pitaya SDR support...
+--   Enabling Red Pitaya SDR support.
+--   Override with -DENABLE_REDPITAYA=ON/OFF
+-- 
+-- Configuring FreeSRP support support...
+--   Dependency LIBFREESRP_FOUND = FALSE
+--   Disabling FreeSRP support support.
+--   Override with -DENABLE_FREESRP=ON/OFF
+-- 
+-- Configuring XTRX SDR support...
+--   Dependency LIBXTRX_FOUND = FALSE
+--   Disabling XTRX SDR support.
+--   Override with -DENABLE_XTRX=ON/OFF
+-- Python checking for pygccxml - found
+-- 
+-- ######################################################
+-- # Gnuradio enabled components                         
+-- ######################################################
+--   * Python support
+--   * Osmocom IQ Imbalance Correction
+--   * FUNcube Dongle
+--   * IQ File Source & Sink
+--   * RTLSDR TCP Client
+--   * RFSPACE Receivers
+--   * Red Pitaya SDR
+-- 
+-- ######################################################
+-- # Gnuradio disabled components                        
+-- ######################################################
+--   * Osmocom RTLSDR
+--   * Ettus USRP Devices
+--   * HackRF & rad1o Badge
+--   * nuand bladeRF
+--   * AIRSPY Receiver
+--   * AIRSPY HF+ Receiver
+--   * SoapySDR support
+--   * FreeSRP support
+--   * XTRX SDR
+-- 
+-- Building for version: 0.2.0.0 / 0.2.0
+-- Using install prefix: /usr/local
+-- Configuring done
+-- Generating done
+Consolidate compiler generated dependencies of target gnuradio-osmosdr
+[  3%] Linking CXX shared library libgnuradio-osmosdr.so
+[  3%] Linking CXX shared library libgnuradio-osmosdr.so
+apps
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+cmake_uninstall.cmake
+CTestTestfile.cmake
+docs
+grc
+include
+lib
+Makefile
+python
+python_compile_helper.py
+-- Build type not specified: defaulting to release.
+-- Using GMP.
+-- User set python executable /usr/bin/python3
+-- Checking for module 'sndfile'
+--   No package 'sndfile' found
+-- Could NOT find SNDFILE (missing: SNDFILE_LIBRARIES SNDFILE_INCLUDE_DIRS) 
+-- Extracting version information from git describe...
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Using install prefix: /usr/local
+-- Building for version: v3.6-111-g1a2999ce / 1.1.0git
+-- No C++ unit tests... skipping
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- PYTHON and GRC components are enabled
+-- Python checking for pygccxml - found
+-- Found pybind11: /usr/include (found version "2.9.1")
+-- Configuring done
+-- Generating done
+Consolidate compiler generated dependencies of target gnuradio-ieee802_15_4
+[  1%] Linking CXX shared library libgnuradio-ieee802_15_4.so
+[  1%] Linking CXX shared library libgnuradio-ieee802_15_4.so
+-- Build type not specified: defaulting to release.
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found suitable version "1.74.0", minimum required is "1.35") found components: filesystem system 
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Using GMP.
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake (found suitable version "1.74.0", minimum required is "1.74.0") found components: date_time program_options system regex thread unit_test_framework 
+-- Extracting version information from git describe...
+-- No C++ sources... skipping lib/
+-- No C++ sources... skipping swig/
+-- Could NOT find PythonInterp (missing: PYTHON_EXECUTABLE) (Required is at least version "2")
+-- Could NOT find PythonInterp (missing: PYTHON_EXECUTABLE) (Required is at least version "2")
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Configuring incomplete, errors occurred!
+See also "/opt/gr-rftap/build/CMakeFiles/CMakeOutput.log".
+-- Build type not specified: defaulting to release.
+-- UHD library not found, no support for timed TX.
+-- Using GMP.
+-- User set python executable /usr/bin/python3
+-- Checking for module 'sndfile'
+--   No package 'sndfile' found
+-- Could NOT find SNDFILE (missing: SNDFILE_LIBRARIES SNDFILE_INCLUDE_DIRS) 
+-- Extracting version information from git describe...
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Using install prefix: /usr/local
+-- Building for version: cc8bfc6e / 1.1.0git
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- PYTHON and GRC components are enabled
+-- Python checking for pygccxml - found
+-- Found pybind11: /usr/include (found version "2.9.1")
+-- Configuring done
+-- Generating done
+Consolidate compiler generated dependencies of target gnuradio-foo
+[  3%] Linking CXX shared library libgnuradio-foo.so
+[  3%] Linking CXX shared library libgnuradio-foo.so
+-- Found pybind11: /usr/include (found version "2.9.1")
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /opt/gr-rftap/build/gr-foo/build/CalculWeigthBetweenTwoHexString/build
+Consolidate compiler generated dependencies of target calcWeight
+[100%] Built target calcWeight
+calcWeight.cpython-310-x86_64-linux-gnu.so
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+Makefile

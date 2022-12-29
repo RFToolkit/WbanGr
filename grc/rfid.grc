@@ -225,7 +225,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 492.0]
+    coordinate: [1416, 588.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_conjugate_cc_0
@@ -276,7 +276,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [960, 492.0]
+    coordinate: [1176, 524.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_tagged_stream_0
@@ -312,7 +312,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 396.0]
+    coordinate: [1232, 332.0]
     rotation: 0
     state: enabled
 - name: osmosdr_source_0
