@@ -8,9 +8,9 @@
 # Title: IEEE 802.15.4 Transceiver
 # Author: Dimitrios-Georgios Akestoridis
 # Description: A simplified version of Bastian Bloessl's GRC flow graph for an IEEE 802.15.4 transceiver.
-# GNU Radio version: 3.9.8.0
+# GNU Radio version: 3.10.1.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -33,6 +33,7 @@ import math
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import filter
+from gnuradio import fec
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
@@ -87,15 +88,19 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.channel = channel = 20
+        self.variable_constellation_0 = variable_constellation_0 = digital.constellation_calcdist([-1-1j, -1+1j, 1+1j, 1-1j], [0, 1, 3, 2],
+        4, 1, digital.constellation.AMPLITUDE_NORMALIZATION).base()
         self.freq = freq = 2405000000 + 5000000*(channel - 11)
+        self.variable0 = variable0 = digital.adaptive_algorithm_cma( variable_constellation_0, .0001, 2).base()
         self.symb0 = symb0 = 8
         self.symb = symb = 3
-        self.samp_rate = samp_rate = 60000000
-        self.rx_gain = rx_gain = 5
+        self.samp_rate = samp_rate = 1000000
         self.page_label = page_label = 0
         self.if_gain = if_gain = 30
         self.freqd = freqd = 926
         self.freq_label = freq_label = freq / 1000000000.0
+        self.encode = encode = fec.dummy_encoder_make(2048)
+        self.decode = decode = fec.dummy_decoder.make(2048)
         self.bt = bt = 15
         self.bb_gain = bb_gain = 30
 
@@ -113,13 +118,6 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self._symb_win = RangeWidget(self._symb_range, self.set_symb, "symb", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._symb_win, 90, 0, 1, 1)
         for r in range(90, 91):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self._rx_gain_range = Range(0, 50, 1, 5, 200)
-        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "'rx_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._rx_gain_win, 96, 0, 1, 1)
-        for r in range(96, 97):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
@@ -144,7 +142,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.single_pole_iir_filter_xx_0 = filter.single_pole_iir_filter_ff(0.000150, 1)
+        self.single_pole_iir_filter_xx_0_0_1 = filter.single_pole_iir_filter_ff(0.00016, 1)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -181,58 +179,6 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
 
         self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 7, 0, 1, 4)
         for r in range(7, 8):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 4):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self.qtgui_time_sink_x_1_2_0_0 = qtgui.time_sink_f(
-            1024, #size
-            samp_rate, #samp_rate
-            "Rx", #name
-            1, #number of inputs
-            None # parent
-        )
-        self.qtgui_time_sink_x_1_2_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_1_2_0_0.set_y_axis(-0.5, 0.5)
-
-        self.qtgui_time_sink_x_1_2_0_0.set_y_label('Amplitude', "")
-
-        self.qtgui_time_sink_x_1_2_0_0.enable_tags(True)
-        self.qtgui_time_sink_x_1_2_0_0.set_trigger_mode(qtgui.TRIG_MODE_AUTO, qtgui.TRIG_SLOPE_POS, 0.2, 0, 0, "")
-        self.qtgui_time_sink_x_1_2_0_0.enable_autoscale(True)
-        self.qtgui_time_sink_x_1_2_0_0.enable_grid(False)
-        self.qtgui_time_sink_x_1_2_0_0.enable_axis_labels(True)
-        self.qtgui_time_sink_x_1_2_0_0.enable_control_panel(True)
-        self.qtgui_time_sink_x_1_2_0_0.enable_stem_plot(False)
-
-
-        labels = ['Raw DC Blocked R', 'Raw DC Blocked I', 'dqpsk R', 'dqpsk I', 'Sub i',
-            'Sub q', '', '', '', '']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ['blue', 'red', 'green', 'black', 'cyan',
-            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
-        styles = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1]
-
-
-        for i in range(1):
-            if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_1_2_0_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_time_sink_x_1_2_0_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_1_2_0_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_1_2_0_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_1_2_0_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_1_2_0_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_1_2_0_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_time_sink_x_1_2_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_1_2_0_0.qwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_1_2_0_0_win, 5, 0, 1, 4)
-        for r in range(5, 6):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
@@ -290,6 +236,69 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         for r in range(8, 9):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self.qtgui_sink_x_0_0 = qtgui.sink_f(
+            1024, #fftsize
+            window.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            "enco_deco", #name
+            True, #plotfreq
+            False, #plotwaterfall
+            True, #plottime
+            True, #plotconst
+            None # parent
+        )
+        self.qtgui_sink_x_0_0.set_update_time(1.0/10)
+        self._qtgui_sink_x_0_0_win = sip.wrapinstance(self.qtgui_sink_x_0_0.qwidget(), Qt.QWidget)
+
+        self.qtgui_sink_x_0_0.enable_rf_freq(False)
+
+        self.top_layout.addWidget(self._qtgui_sink_x_0_0_win)
+        self.qtgui_const_sink_x_1_1_0_0 = qtgui.const_sink_c(
+            1024, #size
+            "sink", #name
+            1, #number of inputs
+            None # parent
+        )
+        self.qtgui_const_sink_x_1_1_0_0.set_update_time(0.1)
+        self.qtgui_const_sink_x_1_1_0_0.set_y_axis(-0.4, 0.4)
+        self.qtgui_const_sink_x_1_1_0_0.set_x_axis(-0.4, 0.4)
+        self.qtgui_const_sink_x_1_1_0_0.set_trigger_mode(qtgui.TRIG_MODE_AUTO, qtgui.TRIG_SLOPE_POS, 0.4, 0, "")
+        self.qtgui_const_sink_x_1_1_0_0.enable_autoscale(False)
+        self.qtgui_const_sink_x_1_1_0_0.enable_grid(False)
+        self.qtgui_const_sink_x_1_1_0_0.enable_axis_labels(True)
+
+
+        labels = ['Rx raw', 'DQPSK Soft', 'MPSK', 'Unbuf', '',
+            '', '', '', '', '']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ["Dark Blue", "red", "yellow", "cyan", "red",
+            "red", "red", "red", "red", "red"]
+        styles = [1, 0, 4, 5, 0,
+            0, 0, 0, 0, 0]
+        markers = [9, 7, 6, 0, 0,
+            0, 0, 0, 0, 0]
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_const_sink_x_1_1_0_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_const_sink_x_1_1_0_0.set_line_label(i, labels[i])
+            self.qtgui_const_sink_x_1_1_0_0.set_line_width(i, widths[i])
+            self.qtgui_const_sink_x_1_1_0_0.set_line_color(i, colors[i])
+            self.qtgui_const_sink_x_1_1_0_0.set_line_style(i, styles[i])
+            self.qtgui_const_sink_x_1_1_0_0.set_line_marker(i, markers[i])
+            self.qtgui_const_sink_x_1_1_0_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_const_sink_x_1_1_0_0_win = sip.wrapinstance(self.qtgui_const_sink_x_1_1_0_0.qwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_const_sink_x_1_1_0_0_win, 2, 1, 1, 4)
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 5):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_const_sink_x_1_1 = qtgui.const_sink_c(
             1024, #size
@@ -355,18 +364,18 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             args="numchan=" + str(1) + " " + 'hackrf'
         )
         self.osmosdr_source_0.set_sample_rate(samp_rate)
-        self.osmosdr_source_0.set_center_freq(freq, 0)
+        self.osmosdr_source_0.set_center_freq(2476000000, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
         self.osmosdr_source_0.set_dc_offset_mode(2, 0)
         self.osmosdr_source_0.set_iq_balance_mode(2, 0)
         self.osmosdr_source_0.set_gain_mode(True, 0)
-        self.osmosdr_source_0.set_gain(rx_gain, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
         self.osmosdr_source_0.set_if_gain(if_gain, 0)
         self.osmosdr_source_0.set_bb_gain(bb_gain, 0)
         self.osmosdr_source_0.set_antenna('LNAH', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
-            245,
+            2,
             firdes.low_pass(
                 1,
                 samp_rate,
@@ -398,7 +407,9 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.foo_wireshark_connector_0 = foo.wireshark_connector(195, False)
-        self.digital_symbol_sync_xx_0 = digital.symbol_sync_ff(
+        self.fec_extended_encoder_0 = fec.extended_encoder(encoder_obj_list=encode, threading='capillary', puncpat='11')
+        self.fec_extended_decoder_0 = fec.extended_decoder(decoder_obj_list=decode, threading='capillary', ann=None, puncpat='11', integration_period=10000)
+        self.digital_symbol_sync_xx_0_0 = digital.symbol_sync_ff(
             digital.TED_MENGALI_AND_DANDREA_GMSK,
             symb,
             0.045,
@@ -410,7 +421,8 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             digital.IR_MMSE_8TAP,
             128,
             [])
-        self.digital_clock_recovery_mm_xx_0 = digital.clock_recovery_mm_ff(2, 0.00225, 0.5, 0.03, 0.0002)
+        self.digital_map_bb_0 = digital.map_bb([-1,1])
+        self.digital_clock_recovery_mm_xx_0_0_1 = digital.clock_recovery_mm_ff(2, 0.00225, 0.5, 0.03, 0.0002)
         # Create the options list
         self._channel_options = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
         # Create the labels list
@@ -431,13 +443,17 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self.blocks_unpack_k_bits_bb_0_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self.blocks_sub_xx_0 = blocks.sub_ff(1)
-        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
-        self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
+        self.blocks_sub_xx_0_0_1 = blocks.sub_ff(1)
+        self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
+        self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
+        self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
+        self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', True)
         self.blocks_file_sink_0_0_1_0.set_unbuffered(True)
+        self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
+        self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(-20, 1)
-        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_SIN_WAVE, 1000000, 5, 0, 0)
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(1)
 
 
@@ -445,23 +461,31 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.ieee802_15_4_packet_sink_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
-        self.connect((self.analog_quadrature_demod_cf_0, 0), (self.blocks_sub_xx_0, 0))
-        self.connect((self.analog_quadrature_demod_cf_0, 0), (self.single_pole_iir_filter_xx_0, 0))
-        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
-        self.connect((self.analog_simple_squelch_cc_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_sub_xx_0, 0), (self.digital_clock_recovery_mm_xx_0, 0))
+        self.connect((self.analog_quadrature_demod_cf_0, 0), (self.blocks_float_to_char_0, 0))
+        self.connect((self.analog_simple_squelch_cc_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.blocks_char_to_float_0, 0), (self.fec_extended_decoder_0, 0))
+        self.connect((self.blocks_char_to_float_0_0, 0), (self.blocks_sub_xx_0_0_1, 1))
+        self.connect((self.blocks_char_to_float_0_0, 0), (self.single_pole_iir_filter_xx_0_0_1, 0))
+        self.connect((self.blocks_float_to_char_0, 0), (self.blocks_unpack_k_bits_bb_0_0, 0))
+        self.connect((self.blocks_float_to_complex_0, 0), (self.qtgui_const_sink_x_1_1_0_0, 0))
+        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_char_to_float_0_0, 0))
+        self.connect((self.blocks_sub_xx_0_0_1, 0), (self.digital_clock_recovery_mm_xx_0_0_1, 0))
         self.connect((self.blocks_throttle_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.digital_clock_recovery_mm_xx_0, 0), (self.digital_symbol_sync_xx_0, 0))
-        self.connect((self.digital_symbol_sync_xx_0, 0), (self.ieee802_15_4_packet_sink_0, 0))
+        self.connect((self.blocks_unpack_k_bits_bb_0_0, 0), (self.fec_extended_encoder_0, 0))
+        self.connect((self.digital_clock_recovery_mm_xx_0_0_1, 0), (self.digital_symbol_sync_xx_0_0, 0))
+        self.connect((self.digital_map_bb_0, 0), (self.blocks_char_to_float_0, 0))
+        self.connect((self.digital_symbol_sync_xx_0_0, 0), (self.blocks_float_to_complex_0, 0))
+        self.connect((self.digital_symbol_sync_xx_0_0, 0), (self.ieee802_15_4_packet_sink_0, 0))
+        self.connect((self.digital_symbol_sync_xx_0_0, 0), (self.qtgui_sink_x_0_0, 0))
+        self.connect((self.fec_extended_decoder_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
+        self.connect((self.fec_extended_encoder_0, 0), (self.digital_map_bb_0, 0))
         self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0_0_1_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.analog_quadrature_demod_cf_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_const_sink_x_1_1, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_time_sink_x_1_2, 0))
         self.connect((self.low_pass_filter_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.analog_simple_squelch_cc_0, 0))
-        self.connect((self.single_pole_iir_filter_xx_0, 0), (self.blocks_sub_xx_0, 1))
-        self.connect((self.single_pole_iir_filter_xx_0, 0), (self.qtgui_time_sink_x_1_2_0_0, 0))
+        self.connect((self.single_pole_iir_filter_xx_0_0_1, 0), (self.blocks_sub_xx_0_0_1, 0))
 
 
     def closeEvent(self, event):
@@ -480,14 +504,25 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
         self._channel_callback(self.channel)
         self.set_freq(2405000000 + 5000000*(self.channel - 11))
 
+    def get_variable_constellation_0(self):
+        return self.variable_constellation_0
+
+    def set_variable_constellation_0(self, variable_constellation_0):
+        self.variable_constellation_0 = variable_constellation_0
+
     def get_freq(self):
         return self.freq
 
     def set_freq(self, freq):
         self.freq = freq
         self.set_freq_label(self.freq / 1000000000.0)
-        self.osmosdr_source_0.set_center_freq(self.freq, 0)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, self.samp_rate/2)
+
+    def get_variable0(self):
+        return self.variable0
+
+    def set_variable0(self, variable0):
+        self.variable0 = variable0
 
     def get_symb0(self):
         return self.symb0
@@ -506,20 +541,12 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100000, 25000, window.WIN_HAMMING, 6.76))
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
+        self.qtgui_sink_x_0_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_time_sink_x_1_2.set_samp_rate(self.samp_rate)
-        self.qtgui_time_sink_x_1_2_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(self.freq, self.samp_rate/2)
-
-    def get_rx_gain(self):
-        return self.rx_gain
-
-    def set_rx_gain(self, rx_gain):
-        self.rx_gain = rx_gain
-        self.osmosdr_source_0.set_gain(self.rx_gain, 0)
 
     def get_page_label(self):
         return self.page_label
@@ -547,6 +574,18 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
     def set_freq_label(self, freq_label):
         self.freq_label = freq_label
         Qt.QMetaObject.invokeMethod(self._freq_label_label, "setText", Qt.Q_ARG("QString", str(self._freq_label_formatter(self.freq_label))))
+
+    def get_encode(self):
+        return self.encode
+
+    def set_encode(self, encode):
+        self.encode = encode
+
+    def get_decode(self):
+        return self.decode
+
+    def set_decode(self, decode):
+        self.decode = decode
 
     def get_bt(self):
         return self.bt

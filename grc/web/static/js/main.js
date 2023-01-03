@@ -58,6 +58,18 @@ const chart=Highcharts.chart('container', {
   }]
 });
 
+const pan = [];
+const ids = [];
+
+function isArrayInArray(arr, item){
+  var item_as_string = JSON.stringify(item);
+
+  var contains = arr.some(function(ele){
+    return JSON.stringify(ele) === item_as_string;
+  });
+  return contains;
+}
+
 const bleUid = (response) => {
   response.forEach(resp => {
     console.log(String(resp['manufact']), "", String(resp['services']))
@@ -65,6 +77,10 @@ const bleUid = (response) => {
   });
   
 }
+fetch('http://127.0.0.1:5000/getble', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
+  .then((response) => response.json())
+  .then(bleUid);
+
 
 fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
     .then((response) => response.body)
@@ -72,26 +88,29 @@ fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control
         const reader = body.getReader();
         reader.read().then(function processText({ done, value }) {
             /* … */
+            console.log(value)
+            
             if(value) {
-                let payload=Array.from(value).map(x=> String.fromCharCode(x)).join('').trim()
-                payload=JSON.parse(payload)
-                console.log(payload['payload'])
-                if (payload.src == null) payload['src'] = "0x0000"
-                if (payload.dst == null) payload['dst'] = "0x0001"
-                if (payload.panid == null) payload['panid'] = "0x0002"
-                chart.series[0].addPoint([[payload.src], [payload.dst], [payload.panid]], true)
+                console.log(Array.from(value).map(x=> String.fromCharCode(x)).join(''))
                 
-                /*payloads=Array.from(payloads.match(/{[^}]+}/g))
+                let payloads=Array.from(value).map(x=> String.fromCharCode(x)).join('').trim()
+                
+                payloads=Array.from(payloads.match(/{[^}]+}/g))
                 payloads.forEach(payload => {
                     payload=JSON.parse(payload)
-                    console.log(payload['payload'])
-                    if (payload.src == null) payload['src'] = "0x0000"
-                    if (payload.dst == null) payload['dst'] = "0x0001"
-                    //if (payload.panid == null) payload['panid'] = "0x0001"
-                    chart.series[0].addPoint([[payload.panid, payload.src], [payload.panid, payload.dst]], true)
-                });*/
+                    console.log(payload)
+                    if (((payload.src != null && payload.dst != null) || (payload.src != null && payload.panid != null) || (payload.panid != null && payload.panid != null))) {
+                      if (!isArrayInArray(pan, [payload.src, payload.dst])) {
+                        pan.push([payload.src, payload.dst])
+
+                        chart.series[0].addPoint([payload.src, payload.dst])
+                        Promise.resolve(sleep(100));
+                      }
+                    }
+                });
+                
+                if (done) return;
             }
-            //Promise.resolve(sleep(100));
             return reader.read().then(processText);
         })
         // …

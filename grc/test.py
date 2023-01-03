@@ -7,9 +7,9 @@
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
 # Author: root
-# GNU Radio version: 3.9.8.0
+# GNU Radio version: 3.10.1.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -30,7 +30,6 @@ import sip
 from gnuradio import analog
 import math
 from gnuradio import blocks
-import pmt
 from gnuradio import digital
 from gnuradio import filter
 from gnuradio import fec
@@ -44,6 +43,8 @@ from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
 import foo
 import ieee802_15_4
+import osmosdr
+import time
 
 
 
@@ -96,7 +97,7 @@ class test(gr.top_block, Qt.QWidget):
         self.rx_gain = rx_gain = 5
         self.page_label = page_label = 0
         self.if_gain = if_gain = 30
-        self.freqd = freqd = 926
+        self.freqd = freqd = 40
         self.freq_label = freq_label = freq / 1000000000.0
         self.encode = encode = fec.dummy_encoder_make(2048)
         self.decode = decode = fec.dummy_decoder.make(2048)
@@ -120,14 +121,6 @@ class test(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._bt_range = Range(0, 50, 1, 15, 200)
-        self._bt_win = RangeWidget(self._bt_range, self.set_bt, "bt", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._bt_win, 60, 0, 1, 1)
-        for r in range(60, 61):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self.single_pole_iir_filter_xx_0_0_1 = filter.single_pole_iir_filter_ff(0.00016, 1)
         self._rx_gain_range = Range(0, 50, 1, 5, 200)
         self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "'rx_gain'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_gain_win, 96, 0, 1, 1)
@@ -135,6 +128,28 @@ class test(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self._if_gain_range = Range(0, 50, 1, 30, 200)
+        self._if_gain_win = RangeWidget(self._if_gain_range, self.set_if_gain, "if_gain", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._if_gain_win, 97, 0, 1, 1)
+        for r in range(97, 98):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self._bt_range = Range(0, 50, 1, 15, 200)
+        self._bt_win = RangeWidget(self._bt_range, self.set_bt, "bt", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._bt_win, 60, 0, 1, 1)
+        for r in range(60, 61):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self._bb_gain_range = Range(0, 50, 1, 30, 200)
+        self._bb_gain_win = RangeWidget(self._bb_gain_range, self.set_bb_gain, "BB", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._bb_gain_win, 98, 0, 1, 1)
+        for r in range(98, 99):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
+        self.single_pole_iir_filter_xx_0_0_1 = filter.single_pole_iir_filter_ff(0.00016, 1)
         self.qtgui_sink_x_0_1 = qtgui.sink_c(
             1024, #fftsize
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -276,6 +291,21 @@ class test(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + 'hackrf'
+        )
+        self.osmosdr_source_0.set_time_now(osmosdr.time_spec_t(time.time()), osmosdr.ALL_MBOARDS)
+        self.osmosdr_source_0.set_sample_rate(samp_rate)
+        self.osmosdr_source_0.set_center_freq(freq, 0)
+        self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_dc_offset_mode(2, 0)
+        self.osmosdr_source_0.set_iq_balance_mode(2, 0)
+        self.osmosdr_source_0.set_gain_mode(True, 0)
+        self.osmosdr_source_0.set_gain(rx_gain, 0)
+        self.osmosdr_source_0.set_if_gain(if_gain, 0)
+        self.osmosdr_source_0.set_bb_gain(bb_gain, 0)
+        self.osmosdr_source_0.set_antenna('LNAH', 0)
+        self.osmosdr_source_0.set_bandwidth(0, 0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.low_pass(
@@ -285,15 +315,8 @@ class test(gr.top_block, Qt.QWidget):
                 samp_rate/4,
                 window.WIN_HAMMING,
                 6.76))
-        self._if_gain_range = Range(0, 50, 1, 30, 200)
-        self._if_gain_win = RangeWidget(self._if_gain_range, self.set_if_gain, "if_gain", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._if_gain_win, 97, 0, 1, 1)
-        for r in range(97, 98):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
         self.ieee802_15_4_packet_sink_0 = ieee802_15_4.packet_sink(bt)
-        self._freqd_range = Range(926, 6000, 1, 926, 200)
+        self._freqd_range = Range(0, 100, 1, 40, 200)
         self._freqd_win = RangeWidget(self._freqd_range, self.set_freqd, "freqd", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._freqd_win, 40, 0, 1, 2)
         for r in range(40, 41):
@@ -360,19 +383,10 @@ class test(gr.top_block, Qt.QWidget):
         self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/opt/gr-wban/wpan.wav', True, 0, 0)
-        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-        self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', False)
+        self.blocks_file_sink_0_0_1_0 = blocks.file_sink(gr.sizeof_char*1, '/opt/gr-wban/wpan.pcap', True)
         self.blocks_file_sink_0_0_1_0.set_unbuffered(True)
         self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
-        self._bb_gain_range = Range(0, 50, 1, 30, 200)
-        self._bb_gain_win = RangeWidget(self._bb_gain_range, self.set_bb_gain, "BB", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._bb_gain_win, 98, 0, 1, 1)
-        for r in range(98, 99):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 1):
-            self.top_grid_layout.setColumnStretch(c, 1)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(-15, 1)
         self.analog_quadrature_demod_cf_0_0_1 = analog.quadrature_demod_cf(1)
 
@@ -386,7 +400,6 @@ class test(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_char_to_float_0, 0), (self.fec_extended_decoder_0, 0))
         self.connect((self.blocks_char_to_float_0_0, 0), (self.blocks_sub_xx_0_0_1, 1))
         self.connect((self.blocks_char_to_float_0_0, 0), (self.single_pole_iir_filter_xx_0_0_1, 0))
-        self.connect((self.blocks_file_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_float_to_char_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.qtgui_const_sink_x_1_1_0_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_char_to_float_0_0, 0))
@@ -406,6 +419,7 @@ class test(gr.top_block, Qt.QWidget):
         self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0_0_1_0, 0))
         self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.analog_simple_squelch_cc_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.digital_linear_equalizer_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.single_pole_iir_filter_xx_0_0_1, 0), (self.blocks_sub_xx_0_0_1, 0))
 
 
@@ -437,6 +451,7 @@ class test(gr.top_block, Qt.QWidget):
     def set_freq(self, freq):
         self.freq = freq
         self.set_freq_label(self.freq / 1000000000.0)
+        self.osmosdr_source_0.set_center_freq(self.freq, 0)
 
     def get_variable0(self):
         return self.variable0
@@ -464,6 +479,7 @@ class test(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate*4)
         self.freq_xlating_fir_filter_xxx_0.set_taps( firdes.low_pass(1,self.samp_rate,self.samp_rate/(2*10), 200000))
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, self.samp_rate/2, self.samp_rate/4, window.WIN_HAMMING, 6.76))
+        self.osmosdr_source_0.set_sample_rate(self.samp_rate)
         self.qtgui_sink_x_0_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_sink_x_0_1.set_frequency_range(0, self.samp_rate)
 
@@ -472,6 +488,7 @@ class test(gr.top_block, Qt.QWidget):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
+        self.osmosdr_source_0.set_gain(self.rx_gain, 0)
 
     def get_page_label(self):
         return self.page_label
@@ -485,6 +502,7 @@ class test(gr.top_block, Qt.QWidget):
 
     def set_if_gain(self, if_gain):
         self.if_gain = if_gain
+        self.osmosdr_source_0.set_if_gain(self.if_gain, 0)
 
     def get_freqd(self):
         return self.freqd
@@ -522,6 +540,7 @@ class test(gr.top_block, Qt.QWidget):
 
     def set_bb_gain(self, bb_gain):
         self.bb_gain = bb_gain
+        self.osmosdr_source_0.set_bb_gain(self.bb_gain, 0)
 
 
 

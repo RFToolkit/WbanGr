@@ -20,7 +20,7 @@ login:
 build:
 	${DOCKER} build -t ${APP_NAME} . --file ./docker/gnuradio.Dockerfile
 
-xserver-dev: build
+xserver-dev:
 	xhost + # give foward auth
 	${DOCKER} run --rm -it --privileged \
 		--env DISPLAY=${DISPLAY} \
@@ -51,7 +51,7 @@ tag:
 	${DOCKER} tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 	${DOCKER} tag $(APP_NAME) $(DOCKER_REPO)/$(APP_NAME):latest
 
-push: login build tag
+push: login tag
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
 	${DOCKER} push $(DOCKER_REPO)/$(APP_NAME):latest
 

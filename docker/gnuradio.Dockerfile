@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:22.04
 
 ENV WORKSPACE /opt/gr-wban
 ENV TZ="Europe/Paris"
@@ -35,8 +35,16 @@ RUN chmod +x /usr/bin/entrypoint.sh
 RUN echo "alias grep='grep --color=auto'" >> ~/.bashrc && \
     echo 'set -g default-terminal "screen-256color"' >> ~/.tmux.conf
 
-RUN pip install Flask[async]
+RUN pip3 install Flask[async] codext
 
-COPY ./grc/precompiled /opt/gr-wban/grc/precompiled
+#ENV CODE_VERSION 1.74.2.22355
+#ENV CODE_LINK https://github.com/VSCodium/vscodium/releases/download/${CODE_VERSION}/codium_${CODE_VERSION}_amd64.deb
+#RUN cd tmp &&\
+#    curl -L ${CODE_LINK} -o /tmp/code.deb &&\
+#    apt install /tmp/code.deb &&\
+#    rm -rvf /tmp/code.deb &&\
+#    echo "codium --no-sandbox --user-data-dir=/tmp/code $@" > /usr/bin/code2
+
+COPY ./grc/precompiled /opt/gr-wban/precompiled
 RUN mkdir -p ${WORKSPACE}
 WORKDIR ${WORKSPACE}

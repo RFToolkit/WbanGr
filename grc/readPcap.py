@@ -37,9 +37,17 @@ from flask import Flask, Response, request, render_template
 from calcW import tcp, getGUDID
 from Coap import COAP
 from core.regle import REGLE
-#from CalculWeigthBetweenTwoHexString.build.calcWeight import btfMain, xorBTF
+from bs4 import UnicodeDammit
+import nltk
+try:
+    from precompiled.calcWeight import btfMain, xorBTF
+except:
+    from calcWeight import btfMain, xorBTF
 
 import base64
+nltk.download('punkt')
+
+import codext
 
 mime = magic.Magic(mime=True)
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +64,7 @@ rm=False
 rdata=b''
 
 conf.dot15d4_protocol = "sixlowpan"
-yandex = GoogleTranslator(source='auto', target='fr')
+yandex = GoogleTranslator(source='auto', target='en')
 
 
 class Config:
@@ -138,7 +146,7 @@ def execXOR(line, k1):
 regex0=r'[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 andRegex0=r'[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 
-def decodeStr(t, l='fr'):
+def decodeStr(t, l='en'):
     try:
         if isinstance(t, str): t=t.encode('latin-1', 'ignore')
         detection = chardet.detect(t)
@@ -165,22 +173,25 @@ def formatStr(string):
 
 def approxim(u):
     u=u.replace(' ', '')
-    u=u.encode('utf-8').hex()
-    uid=getGUDID(u, '/dict2.txt').split(',')[0].split(':')[1]
-    return bytes.fromhex(uid).decode('utf-8')
+    #u=u.encode('utf-8').hex()
+    uid=getGUDID(u, '/perso/dict.txt').split(',')[0].split(':')[1]
+    return uid #bytes.fromhex(uid).decode('utf-8')
 
 def addition(line):
     if isinstance(line, str): line=line.encode('latin-1', 'ignore')
-    txt=''
+    txt,bis='', ''
     tmp=line.hex()
     tmp=''.join([ tmp[i:i+2] if int(tmp[i:i+2], 16) > int('1f', 16) and tmp[i:i+2].lower() != '7f' else ',' for i in range(0,len(tmp), 2) ])
     tmp=tmp.split(',')
     res=''
     for h in tmp:
         if len(h):
-            h=tcp(h)[0]
-            h=' '.join([*filter(lambda x: x, re.split(r'[^a-zA-Z]', h)) ])
-            txt+=approxim(h).replace('\n', ' ')+" "
+            test=approxim(h).replace('\n', ' ')+" "
+            if test != bis:
+                h=tcp(h, b'e '.hex())[0]
+                h=' '.join([*filter(lambda x: x, re.split(r'[^a-zA-Z]', h)) ])
+                bis=test
+                txt+=bis
 
     return txt
 
@@ -228,28 +239,32 @@ def encodingUnpack(line):
             if len(tsTxt):
                 line=tsTxt.encode('utf-16be', 'ignore').replace(b'\x00', b'').decode("utf-16", 'ignore')
                 u+=line+"\n"
-                tsTxt=yandex.translate(u)
+                line=GoogleTranslator(source='auto', target='fr'
+                    ).translate(u).replace(r'\s{2,}', '').strip()
+                
+                """
                 if len(tsTxt): 
                     line=tsTxt.encode('utf-16be', 'ignore').replace(rb'(\x00){2,}', b'').replace(rb'(\x20){2,}', b'') #.replace(rb'(\x00)+', b'').replace(b'\x20', b'')
-                    tsTxt=line.decode('utf-8', 'ignore')
+                    #tsTxt=line.decode('utf-8', 'ignore')
                     line=line.decode('utf-16be', 'ignore')
-                    line=tsTxt+line
+                    #line=tsTxt+line
                     line=line.replace(r'\s{2,}', '').strip()
                 line=line.replace('ying', 'ti')
+                """
 
             if (line):
                 line=GoogleTranslator(source='auto', target='fr'
                     ).translate(line)
 
                 # GUID
-                ids=getGUDID(line.encode('utf-8', 'ignore').hex()[4:4+8])
+                #ids=getGUDID(line.encode('utf-8', 'ignore').hex()[4:4+8])
                 print(ids)
                 line=' '.join([*filter(lambda x: x, re.split(regex0, line)) ])
                 
                 
             #hexdump(ids+line+addition(o))
 
-            return ids+line
+            return line
 
     except Exception as e:
         print("Main: ", e)
@@ -259,10 +274,6 @@ def encodingUnpack(line):
 
 
 def translate(line, res):
-    ro="0069sandra4152"
-    xorWord = lambda ss,cc: ''.join(chr(ord(s)^ord(c)) for s,c in zip(ss,cc*100))
-    with open('.payload', 'a+') as the_file:
-        the_file.write(xorWord(line.decode('utf-8', 'ignore'), ro))
     try:
         line=encodingUnpack(line)
         if(len(line)):
@@ -301,7 +312,34 @@ def liveUDPResolver(payload, on=0, tmp=''):
         return (re.split(regex0, payload) + re.split(andRegex0, payload))
 
     on-=1
-    
+
+
+def m(encoded_bytes):
+    # Split the encoded bytes into individual bits
+    bits = []
+    for b in encoded_bytes:
+        for i in range(8):
+            bits.append((b >> i) & 1)
+
+    # Determine the value of each bit
+    decoded_bits = []
+    for bit in bits:
+        if bit == 1:
+            decoded_bits.append(1)
+        else:
+            decoded_bits.append(0)
+
+    # Convert the bits to bytes
+    bytes = []
+    for i in range(0, len(decoded_bits), 8):
+        byte = decoded_bits[i:i+8]
+        bytes.append(int("".join(str(b) for b in byte), 2))
+
+    r=''.join([ chr(x) for x in bytes])  # Output: [170]
+    print(str(r))
+
+    return r
+
     
 def readPktSync():
     try:
@@ -318,11 +356,15 @@ def readPktSync():
                                 dst=p[Dot15d4Data].dest_panid
                                 if src != None: src=hex(int(src))
                                 if dst != None: dst=hex(int(dst))
+
+                            if Dot15d4Cmd in p:
+                                if dst == None:
+                                    dst=p[Dot15d4Cmd].dest_panid
+                                    if dst != None: dst=hex(int(dst))
                                 
                             if Dot15d4Beacon in p:
-                                #print(p[Dot15d4Beacon])
-                                panid = hex(int(p[Dot15d4Beacon].src_panid))
-                                print("PanID", panid)
+                                src=hex(int(p[Dot15d4Beacon].src_panid))
+                                
                             """
                             if SixLoWPAN in p:
                             if LoWPANFragmentationFirst in p:
@@ -331,25 +373,24 @@ def readPktSync():
                             if LoWPAN_IPHC in p:
                                 print(SixLoWPAN(p))
                             """
-
-
                             
-                            
-
                         payload=b''
                         if (p.payload.payload and len(p.payload.payload)):
-
+                            
+                            
                             reversedBytes = bytes(p.payload.payload)
-
+                            #xorBTF(reversedBytes.hex(), ROOT_DIR+"/perso/1000000-password-seclists.txt", ROOT_DIR+"/perso/dict/med.txt")
                             """dt=date.today().isoformat().encode('utf-8', 'ignore').hex()
                             payload=tcp(payload.hex(), dt)[0]
                             payload=payload.encode('utf-8', 'ignore')"""
 
                             if len(reversedBytes) >8:
                                 coap=COAP(reversedBytes)
+                                
                                 cph=coap.noCipherredData()
-                                if cph:
+                                if cph and len(reversedBytes) > 16:
                                     t=coap.getCode()
+                                    
                                     s=int((cph[2:4] + cph[5:7]), 2)
                                     if cph[8:s*2] != '':
                                         
@@ -364,6 +405,7 @@ def readPktSync():
                                         unit=[int(payload.hex()[i:i+2], 16) for i in range(0, len(payload.hex()), 2)]
                                         #payload=[ *translate(b''.join(payload), {  "src": src, "dst": dst, "panid": panid }) ]
                                         
+
                                         if t == 1: 
                                             print('========= GET ===========')
                                         if t == 2:
@@ -372,7 +414,7 @@ def readPktSync():
                                             print('========= PUT ============')
                                         if t == 4:
                                             print('========== DELETE ==========')
-                                        
+                                    
                                         print("x"*35)
                                         if src or dst: print(src, " -> ", dst)
                                         if panid: print("PanID", panid)
@@ -387,27 +429,10 @@ def readPktSync():
                                         #print( str(mime.from_buffer(reversedBytes)) )
                                         activate=0
                                         unitNum=[*map(lambda x: x < 58 and x > 47, unit)]
-                                        #for k, v in enumerate(unit):
-                                        #    if v == 86:
-                                        #        print(''.join([ chr(x) for x in unit[k-3:k+1] ]).replace('\n', '').replace('\t', '').replace('\r', ''))
 
-                                        """if hexf == 86 and len(unitNum[i:k]) and bool(sum(unitNum)):
-                                                print(unitNum[i:k].reverse())
-                                                val=unitNum[i:k].index(True)
-                                                print(unit[i+val:k])
-                                                print('UNIT: ', ''.join([ chr(x) for x in unit[i+val:k] ]))
-                                                i=k"""
+                                        hexdump(payload.decode('iso8859', 'ignore').encode('big5', 'ignore').decode('iso8859', 'ignore'))
+                                        print('')
                                         
-                                        #import base64
-                                        a=b''.join([ n.to_bytes(3, byteorder='little') for n in unit ])
-                                        print("Message1: ", decodeStr(payload))
-                                        print("ORIGINAL D:", payload.decode('utf-8', 'ignore'))
-                                        
-                                        #print(liveUDPResolver(payload, 0))
-                                        #payload=' '.join([*filter(lambda x: x, liveUDPResolver(payload, 2))]).encode()
-                                        #print("Message2: ", decodeStr(payload))
-                                        from bs4 import UnicodeDammit
-                                        suggestion = UnicodeDammit(payload)
                                         #https://datatracker.ietf.org/doc/rfc7752/
                                         bgpName=payload.hex().find('1026')
                                         if (bgpName >= 0):
@@ -448,14 +473,28 @@ def readPktSync():
                                         """
                                         #t=[ t[i:i+2] for i in range(0, len(t), 2) ]
                                         #t=[ bin(int(x, 16))[2:] for x in t ]
-                                        
-                        res=translate(payload, {  "src": src, "dst": dst, "panid": panid })
-                        #print([ str(mime.from_buffer(x['payload'])) for x in [*res] ])
-                        for edt in res:
-                            yield json.dumps(edt)
+                                    time.sleep(1)
+                            
+                            res={"src":src,"dst":dst,"panid":panid,"payload":payload.hex()}
+                            yield json.dumps(res)
+
+                        elif src and dst:
+                            print("x"*35)
+                            if src or dst: print(src, " -> ", dst)
+                            if panid: print("PanID", panid)
+                            print("x"*35)
+                            print('=========CRYPTED==========')
+                            hexdump(payload)
+
+
+                            """res=translate(payload or '', {  "src": src, "dst": dst, "panid": panid })
+                            #print([ str(mime.from_buffer(x['payload'])) for x in [*res] ])
+                            """
+                            res={ "src": src, "dst": dst, "panid": panid, "payload": payload.hex() }
+                            yield json.dumps(res)
     
     except Exception as e:
-        #print(e)
+        print(e)
         pass
     #finally:
     #    print("==========================================End")
@@ -484,14 +523,6 @@ async def getble():
 
 if __name__ == "__main__":
     print('Please run gnuradio')
-    while True:
-        try:
-            for e in readPktSync():
-                print(e)
-        except KeyboardInterrupt:
-            break
-
-        time.sleep(5)
     """
     app.config.from_object(Config())
 
@@ -502,7 +533,7 @@ if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
     """
-    #app.run(debug=True, use_reloader=True, host="0.0.0.0", port="5000")
+    app.run(debug=True, use_reloader=True, host="0.0.0.0", port="5000")
         
                     
     

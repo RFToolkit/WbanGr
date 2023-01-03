@@ -6,9 +6,9 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
-# GNU Radio version: 3.9.8.0
+# GNU Radio version: 3.10.1.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -37,6 +37,7 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
+import channelizer_epy_module_0 as epy_module_0  # embedded python module
 import time
 import threading
 
@@ -125,7 +126,6 @@ class channelizer(gr.top_block, Qt.QWidget):
         self.qtgui_vector_sink_f_0.set_x_axis_units("")
         self.qtgui_vector_sink_f_0.set_y_axis_units("")
         self.qtgui_vector_sink_f_0.set_ref_level(0)
-
 
         labels = ['', '', '', '', '',
             '', '', '', '', '']

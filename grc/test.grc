@@ -173,10 +173,10 @@ blocks:
     min_len: '200'
     orient: QtCore.Qt.Horizontal
     rangeType: float
-    start: '926'
+    start: '0'
     step: '1'
-    stop: '6000'
-    value: '926'
+    stop: '100'
+    value: '40'
     widget: counter_slider
   states:
     bus_sink: false
@@ -333,22 +333,6 @@ blocks:
     coordinate: [48, 1012.0]
     rotation: 0
     state: true
-- name: analog_quadrature_demod_cf_0
-  id: analog_quadrature_demod_cf
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gain: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [688, 956.0]
-    rotation: 0
-    state: disabled
 - name: analog_quadrature_demod_cf_0_0
   id: analog_quadrature_demod_cf
   parameters:
@@ -629,7 +613,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    append: 'False'
+    append: 'True'
     comment: ''
     file: /opt/gr-wban/wpan.pcap
     type: byte
@@ -699,7 +683,7 @@ blocks:
     bus_structure: null
     coordinate: [80, 228.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_float_to_char_0
   id: blocks_float_to_char
   parameters:
@@ -714,7 +698,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1184, 228.0]
+    coordinate: [1208, 260.0]
     rotation: 0
     state: enabled
 - name: blocks_float_to_complex_0
@@ -749,42 +733,6 @@ blocks:
     coordinate: [1752, 188.0]
     rotation: 0
     state: enabled
-- name: blocks_sub_xx_0
-  id: blocks_sub_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [872, 912.0]
-    rotation: 0
-    state: disabled
-- name: blocks_sub_xx_0_0
-  id: blocks_sub_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_inputs: '2'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [992, 896.0]
-    rotation: 0
-    state: disabled
 - name: blocks_sub_xx_0_0_0
   id: blocks_sub_xx
   parameters:
@@ -964,48 +912,6 @@ blocks:
     coordinate: [1184, 164.0]
     rotation: 0
     state: enabled
-- name: digital_clock_recovery_mm_xx_0
-  id: digital_clock_recovery_mm_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gain_mu: '0.03'
-    gain_omega: '0.00225'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    mu: '0.5'
-    omega: '2'
-    omega_relative_limit: '0.0002'
-    type: float
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [944, 844.0]
-    rotation: 0
-    state: disabled
-- name: digital_clock_recovery_mm_xx_0_0
-  id: digital_clock_recovery_mm_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gain_mu: '0.03'
-    gain_omega: '0.00225'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    mu: '0.5'
-    omega: '2'
-    omega_relative_limit: '0.0002'
-    type: float
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1128, 852.0]
-    rotation: 0
-    state: disabled
 - name: digital_clock_recovery_mm_xx_0_0_0
   id: digital_clock_recovery_mm_xx
   parameters:
@@ -1789,7 +1695,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: hackrf
-    bb_gain0: bb_gain+2
+    bb_gain0: bb_gain
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -1958,7 +1864,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: rx_gain+10
+    gain0: rx_gain
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -2022,7 +1928,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: if_gain+5
+    if_gain0: if_gain
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -2091,7 +1997,7 @@ blocks:
     nchan: '1'
     num_mboards: '1'
     sample_rate: samp_rate
-    sync: none
+    sync: pc_clock
     time_source0: ''
     time_source1: ''
     time_source2: ''
@@ -2105,9 +2011,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 92.0]
+    coordinate: [8, 212.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: osmosdr_source_0_0
   id: osmosdr_source
   parameters:
@@ -2465,98 +2371,6 @@ blocks:
     coordinate: [296, 884.0]
     rotation: 0
     state: disabled
-- name: qtgui_const_sink_x_1_1
-  id: qtgui_const_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: '"Dark Blue"'
-    color10: '"red"'
-    color2: '"red"'
-    color3: '"yellow"'
-    color4: '"cyan"'
-    color5: '"red"'
-    color6: '"red"'
-    color7: '"red"'
-    color8: '"red"'
-    color9: '"red"'
-    comment: ''
-    grid: 'False'
-    gui_hint: 1,0,1,4
-    label1: Rx raw
-    label10: ''
-    label2: DQPSK Soft
-    label3: MPSK
-    label4: Unbuf
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '9'
-    marker10: '0'
-    marker2: '7'
-    marker3: '6'
-    marker4: '0'
-    marker5: '0'
-    marker6: '0'
-    marker7: '0'
-    marker8: '0'
-    marker9: '0'
-    name: '"Rx"'
-    nconnections: '1'
-    size: '1024'
-    style1: '1'
-    style10: '0'
-    style2: '0'
-    style3: '4'
-    style4: '5'
-    style5: '0'
-    style6: '0'
-    style7: '0'
-    style8: '0'
-    style9: '0'
-    tr_chan: '0'
-    tr_level: '0.4'
-    tr_mode: qtgui.TRIG_MODE_AUTO
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: complex
-    update_time: '0.1'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    xmax: '0.4'
-    xmin: '-0.4'
-    ymax: '0.4'
-    ymin: '-0.4'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [712, 924.0]
-    rotation: 0
-    state: disabled
 - name: qtgui_const_sink_x_1_1_0
   id: qtgui_const_sink_x
   parameters:
@@ -2741,35 +2555,6 @@ blocks:
     coordinate: [2152, 444.0]
     rotation: 0
     state: enabled
-- name: qtgui_sink_x_0
-  id: qtgui_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    bw: samp_rate
-    comment: ''
-    fc: '0'
-    fftsize: '1024'
-    gui_hint: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
-    plotconst: 'True'
-    plotfreq: 'True'
-    plottime: 'True'
-    plotwaterfall: 'True'
-    rate: '10'
-    showports: 'False'
-    showrf: 'False'
-    type: complex
-    wintype: window.WIN_BLACKMAN_hARRIS
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [720, 884.0]
-    rotation: 0
-    state: disabled
 - name: qtgui_sink_x_0_0
   id: qtgui_sink_x
   parameters:
@@ -2954,42 +2739,6 @@ blocks:
     coordinate: [2080, 972.0]
     rotation: 0
     state: disabled
-- name: single_pole_iir_filter_xx_0
-  id: single_pole_iir_filter_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha: '0.000150'
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [800, 836.0]
-    rotation: 0
-    state: disabled
-- name: single_pole_iir_filter_xx_0_0
-  id: single_pole_iir_filter_xx
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha: '0.00016'
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [824, 908.0]
-    rotation: 0
-    state: disabled
 - name: single_pole_iir_filter_xx_0_0_0
   id: single_pole_iir_filter_xx
   parameters:
@@ -3147,6 +2896,32 @@ blocks:
     coordinate: [280, 356.0]
     rotation: 0
     state: disabled
+- name: virtual_sink_1
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: data
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 404.0]
+    rotation: 0
+    state: true
+- name: virtual_sink_2
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: data
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1112, 1020.0]
+    rotation: 0
+    state: disabled
 - name: virtual_source_0
   id: virtual_source
   parameters:
@@ -3160,12 +2935,22 @@ blocks:
     coordinate: [1872, 916.0]
     rotation: 0
     state: disabled
+- name: virtual_source_1
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: data
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1008, 260.0]
+    rotation: 0
+    state: true
 
 connections:
-- [analog_quadrature_demod_cf_0, '0', blocks_sub_xx_0, '0']
-- [analog_quadrature_demod_cf_0, '0', single_pole_iir_filter_xx_0, '0']
-- [analog_quadrature_demod_cf_0_0, '0', blocks_sub_xx_0_0, '0']
-- [analog_quadrature_demod_cf_0_0, '0', single_pole_iir_filter_xx_0_0, '0']
+- [analog_quadrature_demod_cf_0_0, '0', virtual_sink_2, '0']
 - [analog_quadrature_demod_cf_0_0_0, '0', blocks_sub_xx_0_0_0, '0']
 - [analog_quadrature_demod_cf_0_0_0, '0', single_pole_iir_filter_xx_0_0_0, '0']
 - [analog_quadrature_demod_cf_0_0_0_0, '0', blocks_sub_xx_0_0_0_0, '0']
@@ -3185,7 +2970,7 @@ connections:
 - [analog_quadrature_demod_cf_0_0_0_0_0_3, '0', blocks_sub_xx_0_0_0_0_0_3, '0']
 - [analog_quadrature_demod_cf_0_0_0_0_0_3, '0', single_pole_iir_filter_xx_0_0_0_0_0_3,
   '0']
-- [analog_quadrature_demod_cf_0_0_1, '0', blocks_float_to_char_0, '0']
+- [analog_quadrature_demod_cf_0_0_1, '0', virtual_sink_1, '0']
 - [analog_simple_squelch_cc_0, '0', blocks_throttle_0, '0']
 - [blocks_char_to_float_0, '0', fec_extended_decoder_0, '0']
 - [blocks_char_to_float_0_0, '0', blocks_sub_xx_0_0_1, '1']
@@ -3196,8 +2981,6 @@ connections:
 - [blocks_float_to_char_0, '0', blocks_unpack_k_bits_bb_0, '0']
 - [blocks_float_to_complex_0, '0', qtgui_const_sink_x_1_1_0_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', blocks_char_to_float_0_0, '0']
-- [blocks_sub_xx_0, '0', digital_clock_recovery_mm_xx_0, '0']
-- [blocks_sub_xx_0_0, '0', digital_clock_recovery_mm_xx_0_0, '0']
 - [blocks_sub_xx_0_0_0, '0', digital_clock_recovery_mm_xx_0_0_0, '0']
 - [blocks_sub_xx_0_0_0_0, '0', digital_clock_recovery_mm_xx_0_0_0_0, '0']
 - [blocks_sub_xx_0_0_0_0_0, '0', digital_clock_recovery_mm_xx_0_0_0_0_0, '0']
@@ -3207,7 +2990,6 @@ connections:
 - [blocks_sub_xx_0_0_0_0_0_3, '0', digital_clock_recovery_mm_xx_0_0_0_0_0_3, '0']
 - [blocks_sub_xx_0_0_1, '0', digital_clock_recovery_mm_xx_0_0_1, '0']
 - [blocks_throttle_0, '0', low_pass_filter_0, '0']
-- [blocks_throttle_0, '0', low_pass_filter_0_1, '0']
 - [blocks_throttle_0, '0', low_pass_filter_0_1_0, '0']
 - [blocks_throttle_0, '0', low_pass_filter_0_1_0_0, '0']
 - [blocks_throttle_0, '0', low_pass_filter_0_1_0_0_0, '0']
@@ -3216,8 +2998,6 @@ connections:
 - [blocks_throttle_0, '0', low_pass_filter_0_1_0_0_0_2, '0']
 - [blocks_throttle_0, '0', low_pass_filter_0_1_0_0_0_3, '0']
 - [blocks_unpack_k_bits_bb_0, '0', fec_extended_encoder_0, '0']
-- [digital_clock_recovery_mm_xx_0, '0', digital_symbol_sync_xx_0, '0']
-- [digital_clock_recovery_mm_xx_0_0, '0', ieee802_15_4_packet_sink_0_0, '0']
 - [digital_clock_recovery_mm_xx_0_0_0, '0', ieee802_15_4_packet_sink_0_0_0, '0']
 - [digital_clock_recovery_mm_xx_0_0_0_0, '0', ieee802_15_4_packet_sink_0_0_0_0, '0']
 - [digital_clock_recovery_mm_xx_0_0_0_0_0, '0', ieee802_15_4_packet_sink_0_0_0_0_0,
@@ -3232,6 +3012,7 @@ connections:
   '0']
 - [digital_clock_recovery_mm_xx_0_0_1, '0', digital_symbol_sync_xx_0_0, '0']
 - [digital_linear_equalizer_0, '0', analog_quadrature_demod_cf_0_0_1, '0']
+- [digital_linear_equalizer_0, '0', low_pass_filter_0_1, '0']
 - [digital_linear_equalizer_0, '0', qtgui_const_sink_x_1_1_0, '0']
 - [digital_linear_equalizer_0, '0', qtgui_sink_x_0_1, '0']
 - [digital_map_bb_0, '0', blocks_char_to_float_0, '0']
@@ -3257,10 +3038,7 @@ connections:
 - [ieee802_15_4_packet_sink_0_0_0_0_0_2, out, foo_wireshark_connector_0, in]
 - [ieee802_15_4_packet_sink_0_0_0_0_0_3, out, foo_wireshark_connector_0, in]
 - [ieee802_15_4_packet_sink_0_0_1, out, foo_wireshark_connector_0_0, in]
-- [low_pass_filter_0, '0', analog_quadrature_demod_cf_0, '0']
 - [low_pass_filter_0, '0', digital_linear_equalizer_0, '0']
-- [low_pass_filter_0, '0', qtgui_const_sink_x_1_1, '0']
-- [low_pass_filter_0, '0', qtgui_sink_x_0, '0']
 - [low_pass_filter_0_1, '0', analog_quadrature_demod_cf_0_0, '0']
 - [low_pass_filter_0_1_0, '0', analog_quadrature_demod_cf_0_0_0, '0']
 - [low_pass_filter_0_1_0_0, '0', analog_quadrature_demod_cf_0_0_0_0, '0']
@@ -3269,10 +3047,8 @@ connections:
 - [low_pass_filter_0_1_0_0_0_1, '0', analog_quadrature_demod_cf_0_0_0_0_0_1, '0']
 - [low_pass_filter_0_1_0_0_0_2, '0', analog_quadrature_demod_cf_0_0_0_0_0_2, '0']
 - [low_pass_filter_0_1_0_0_0_3, '0', analog_quadrature_demod_cf_0_0_0_0_0_3, '0']
-- [osmosdr_source_0, '0', analog_simple_squelch_cc_0, '0']
 - [osmosdr_source_0, '0', blocks_file_sink_1, '0']
-- [single_pole_iir_filter_xx_0, '0', blocks_sub_xx_0, '1']
-- [single_pole_iir_filter_xx_0_0, '0', blocks_sub_xx_0_0, '1']
+- [osmosdr_source_0, '0', freq_xlating_fir_filter_xxx_0, '0']
 - [single_pole_iir_filter_xx_0_0_0, '0', blocks_sub_xx_0_0_0, '1']
 - [single_pole_iir_filter_xx_0_0_0_0, '0', blocks_sub_xx_0_0_0_0, '1']
 - [single_pole_iir_filter_xx_0_0_0_0_0, '0', blocks_sub_xx_0_0_0_0_0, '1']
@@ -3282,7 +3058,7 @@ connections:
 - [single_pole_iir_filter_xx_0_0_0_0_0_3, '0', blocks_sub_xx_0_0_0_0_0_3, '1']
 - [single_pole_iir_filter_xx_0_0_1, '0', blocks_sub_xx_0_0_1, '0']
 - [virtual_source_0, '0', fec_ber_bf_0, '0']
+- [virtual_source_1, '0', blocks_float_to_char_0, '0']
 
 metadata:
   file_format: 1
-  grc_version: 3.9.8.0

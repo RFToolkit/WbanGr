@@ -12,6 +12,7 @@ osmosdr () {
     ldconfig
     ls
 }
+
 adaptkarel () {
     cd /opt
     git clone https://github.com/karel/gr-adapt
@@ -66,8 +67,7 @@ calcWeigth () {
     mkdir build
     cd build
     cmake ..
-    make
-    ls
+    cmake --build . #make 
     cp ./calcWeight.cpython-38-x86_64-linux-gnu.so /usr/local/lib/python3.8/dist-packages/
     ldconfig
 }
