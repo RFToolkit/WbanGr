@@ -65,7 +65,7 @@ async def Scan():
 
             if (t['props']['RSSI']>-80 and (pwtx<10) and cpt<3):
                 
-                #await client.connect()
+                await client.connect()
                 #await pair(client)
                 cpt+=1
             
@@ -77,10 +77,12 @@ async def Scan():
                 k=t['props']['ServiceData'].keys() if 'ServiceData' in t['props'] else []
                 for v,i in enumerate(k):
                     suid=i
-                    services+=t['props']['ManufacturerData'][i].decode('latin-1', 'ignore')
+                    services+=t['props']['ServiceData'][i].decode('latin-1', 'ignore')
 
                 addr=t['props']['Address'] if 'Address' in t['props'] else ''
                 arr.append({ "rssi": rssi, "pwtx": pwtx, "manufact": man, "suid": suid, "services": services, "uuid": uuid, "addr": addr })
+
+            
 
         except Exception as e:
             print(e)

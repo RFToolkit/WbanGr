@@ -77,10 +77,12 @@ const bleUid = (response) => {
   });
   
 }
-fetch('http://127.0.0.1:5000/getble', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
-  .then((response) => response.json())
-  .then(bleUid);
+const getBle = () =>
+  fetch('http://127.0.0.1:5000/getble', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
+    .then((response) => response.json())
+    .then(bleUid);
 
+let cpt = 0;
 
 fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control-Allow-Origin':'*' } })
     .then((response) => response.body)
@@ -109,8 +111,9 @@ fetch('http://127.0.0.1:5000/getpkt', { mode: 'cors', headers: { 'Access-Control
                     }
                 });
                 
-                if (done) return;
             }
+            value=null
+            if (done) return;
             return reader.read().then(processText);
         })
         // …

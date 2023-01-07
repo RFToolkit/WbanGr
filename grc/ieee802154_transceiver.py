@@ -364,7 +364,7 @@ class ieee802154_transceiver(gr.top_block, Qt.QWidget):
             args="numchan=" + str(1) + " " + 'hackrf'
         )
         self.osmosdr_source_0.set_sample_rate(samp_rate)
-        self.osmosdr_source_0.set_center_freq(2476000000, 0)
+        self.osmosdr_source_0.set_center_freq(771945000, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
         self.osmosdr_source_0.set_dc_offset_mode(2, 0)
         self.osmosdr_source_0.set_iq_balance_mode(2, 0)

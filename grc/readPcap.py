@@ -64,7 +64,7 @@ rm=False
 rdata=b''
 
 conf.dot15d4_protocol = "sixlowpan"
-yandex = GoogleTranslator(source='auto', target='en')
+yandex = GoogleTranslator(source='auto', target='fr')
 
 
 class Config:
@@ -146,7 +146,7 @@ def execXOR(line, k1):
 regex0=r'[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 andRegex0=r'[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\'\.\,]'
 
-def decodeStr(t, l='en'):
+def decodeStr(t, l='fr'):
     try:
         if isinstance(t, str): t=t.encode('latin-1', 'ignore')
         detection = chardet.detect(t)
@@ -375,10 +375,10 @@ def readPktSync():
                             """
                             
                         payload=b''
-                        if (p.payload.payload and len(p.payload.payload)):
+                        reversedBytes = bytes(p.payload.payload)
+                        if (len(reversedBytes)):
                             
-                            
-                            reversedBytes = bytes(p.payload.payload)
+                            hexdump(reversedBytes)
                             #xorBTF(reversedBytes.hex(), ROOT_DIR+"/perso/1000000-password-seclists.txt", ROOT_DIR+"/perso/dict/med.txt")
                             """dt=date.today().isoformat().encode('utf-8', 'ignore').hex()
                             payload=tcp(payload.hex(), dt)[0]
@@ -430,7 +430,7 @@ def readPktSync():
                                         activate=0
                                         unitNum=[*map(lambda x: x < 58 and x > 47, unit)]
 
-                                        hexdump(payload.decode('iso8859', 'ignore').encode('big5', 'ignore').decode('iso8859', 'ignore'))
+                                        hexdump(payload)
                                         print('')
                                         
                                         #https://datatracker.ietf.org/doc/rfc7752/
@@ -484,7 +484,10 @@ def readPktSync():
                             if panid: print("PanID", panid)
                             print("x"*35)
                             print('=========CRYPTED==========')
-                            hexdump(payload)
+                            hexdump(reversedBytes)
+                        
+                        else:
+                            hexdump(reversedBytes)
 
 
                             """res=translate(payload or '', {  "src": src, "dst": dst, "panid": panid })
@@ -523,6 +526,9 @@ async def getble():
 
 if __name__ == "__main__":
     print('Please run gnuradio')
+    while True:
+        [ x for x in readPktSync() ]
+        time.sleep(1)
     """
     app.config.from_object(Config())
 

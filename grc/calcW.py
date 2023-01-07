@@ -1,7 +1,7 @@
 try:
-    from CalculWeigthBetweenTwoHexString.build.calcWeight import getEntry, getEntryMatch, getMatchingCase
+    from precompiled.calcWeight import btfMain, xorBTF
 except:
-    from calcWeight import getEntry, getEntryMatch, getMatchingCase
+    from calcWeight import btfMain, xorBTF
 import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

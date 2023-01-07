@@ -93,7 +93,7 @@ class test(gr.top_block, Qt.QWidget):
         self.variable0 = variable0 = digital.adaptive_algorithm_cma( variable_constellation_0, .0001, 2).base()
         self.symb0 = symb0 = 4
         self.symb = symb = 16
-        self.samp_rate = samp_rate = 1000000
+        self.samp_rate = samp_rate = 20000000
         self.rx_gain = rx_gain = 5
         self.page_label = page_label = 0
         self.if_gain = if_gain = 30

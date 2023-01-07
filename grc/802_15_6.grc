@@ -1011,7 +1011,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: '2476000000'
+    freq0: '771945000'
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
